@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+**/database.types.ts
+.next
+dist
+.expo

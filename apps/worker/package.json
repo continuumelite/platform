@@ -1,0 +1,23 @@
+{
+  "name": "@continuum/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@continuum/shared": "workspace:*",
+    "fastify": "^5"
+  },
+  "devDependencies": {
+    "@continuum/config": "workspace:*",
+    "@types/node": "^22",
+    "tsx": "^4",
+    "tsup": "^8"
+  }
+}
