@@ -1,5 +1,5 @@
 # Require a review from the tech lead for sensitive areas.
-# Replace @continuum-elite/tech-leads with the real GitHub team once the organization exists.
-/supabase/migrations/   @continuum-elite/tech-leads
-/supabase/tests/        @continuum-elite/tech-leads
-/.github/               @continuum-elite/tech-leads
+# If coachcontinuumelite becomes a GitHub organization, replace @cwascha with a team (e.g. @coachcontinuumelite/tech-leads).
+/supabase/migrations/   @cwascha
+/supabase/tests/        @cwascha
+/.github/               @cwascha
