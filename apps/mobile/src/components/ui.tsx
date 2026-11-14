@@ -7,7 +7,7 @@ import {
   type TextInputProps,
 } from 'react-native';
 
-import { Spacing } from '@/constants/theme';
+import { BrandFonts, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export function Input(props: TextInputProps) {
@@ -70,20 +70,24 @@ export function Button({
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderRadius: 12,
+    borderRadius: 8,
     paddingHorizontal: Spacing.three,
     paddingVertical: 14,
     fontSize: 16,
+    fontFamily: BrandFonts.regular,
   },
   button: {
-    borderRadius: 12,
+    borderRadius: 8,
     paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 50,
   },
+  // Small tracked caps, like the web buttons.
   buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontFamily: BrandFonts.semibold,
+    fontSize: 13,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
 });

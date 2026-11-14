@@ -1,13 +1,13 @@
 import type { ComponentProps } from 'react';
 
 export const inputClass =
-  'w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-zinc-300';
+  'w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 outline-none focus:border-slate-deep focus:ring-2 focus:ring-slate/30 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-slate';
 
 export const buttonClass =
-  'inline-flex items-center justify-center rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300';
+  'inline-flex items-center justify-center rounded-md bg-zinc-950 px-5 py-2.5 text-xs font-semibold tracking-[0.15em] text-zinc-50 uppercase hover:bg-slate-deep disabled:opacity-50 dark:bg-zinc-50 dark:text-zinc-950 dark:hover:bg-slate';
 
 export const secondaryButtonClass =
-  'inline-flex items-center justify-center rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800';
+  'inline-flex items-center justify-center rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:border-slate-deep hover:text-zinc-950 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-slate dark:hover:text-zinc-50';
 
 export function Field({ label, ...props }: ComponentProps<'input'> & { label: string }) {
   return (
@@ -41,7 +41,7 @@ export function Card({
 }) {
   return (
     <section
-      className={`rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 ${className}`}
+      className={`rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
     >
       {children}
     </section>

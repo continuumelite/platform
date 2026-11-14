@@ -13,7 +13,7 @@ export function NavLinks() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-1">
+    <nav className="flex gap-5">
       {links.map(({ href, label }) => {
         const active = href === '/dashboard' ? pathname === href : pathname.startsWith(href);
         return (
@@ -21,10 +21,10 @@ export function NavLinks() {
             key={href}
             href={href}
             aria-current={active ? 'page' : undefined}
-            className={`rounded-lg px-3 py-1.5 text-sm ${
+            className={`border-b-2 px-1 py-1.5 text-xs font-semibold tracking-[0.18em] uppercase ${
               active
-                ? 'bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50'
-                : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'
+                ? 'border-slate text-zinc-50'
+                : 'border-transparent text-zinc-400 hover:text-zinc-50'
             }`}
           >
             {label}

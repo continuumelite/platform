@@ -126,7 +126,9 @@ export default function TodayScreen() {
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
-      <ThemedText type="smallBold">{title}</ThemedText>
+      <ThemedText type="eyebrow" themeColor="accent">
+        {title}
+      </ThemedText>
       {children}
     </ThemedView>
   );

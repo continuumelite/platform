@@ -1,26 +1,67 @@
 @import 'tailwindcss';
 
+/*
+ * Continuum Elite brand.
+ * From the brand deck: near-black #131313, slate #93A7B2, soft grey #B8B7B7, white.
+ * Mood: 90s surf brands meet the new wave of running brands. Monochrome, quiet, thin rules.
+ *
+ * Tailwind's zinc scale is remapped to the brand's warm neutrals (950 is the deck's #131313),
+ * so every zinc-* class in the app picks up the brand. Use `slate`/`slate-deep` for accents:
+ * slate on dark backgrounds, slate-deep on light ones (it meets contrast for text).
+ */
+
+@theme {
+  --color-zinc-50: #f8f7f4;
+  --color-zinc-100: #efeeea;
+  --color-zinc-200: #e2e1dd;
+  --color-zinc-300: #cfcecb;
+  --color-zinc-400: #b8b7b7;
+  --color-zinc-500: #8a8988;
+  --color-zinc-600: #5d5d5d;
+  --color-zinc-700: #3d3d3d;
+  --color-zinc-800: #2a2a2a;
+  --color-zinc-900: #1c1c1c;
+  --color-zinc-950: #131313;
+
+  --color-ink: #131313;
+  --color-bone: #f8f7f4;
+  --color-slate: #93a7b2;
+  --color-slate-deep: #4f6470;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-zinc-50);
+  --foreground: var(--color-ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jost);
+  --font-serif: var(--font-spectral);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--color-ink);
+    --foreground: var(--color-zinc-50);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jost), system-ui, sans-serif;
+}
+
+/* The deck's lower-case value line, separated by thin rules. */
+.brand-values {
+  letter-spacing: 0.02em;
+}
+
+/* Page titles use the brand serif, like the deck's display type. */
+@layer base {
+  h1 {
+    font-family: var(--font-spectral), Georgia, serif;
+  }
 }

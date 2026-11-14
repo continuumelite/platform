@@ -1,18 +1,16 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import { Card } from '@/components/ui';
+import { AuthShell } from '@/components/auth-shell';
 import { AcceptForm } from './accept-form';
 
 export default function InvitePage({ params }: PageProps<'/invite/[token]'>) {
   return (
-    <main className="flex flex-1 items-center justify-center bg-zinc-50 px-4 py-12 dark:bg-black">
-      <Card className="w-full max-w-md">
-        <Suspense fallback={<p className="text-sm text-zinc-500">Loading invitation…</p>}>
-          <Invitation params={params} />
-        </Suspense>
-      </Card>
-    </main>
+    <AuthShell>
+      <Suspense fallback={<p className="text-sm text-zinc-500">Loading invitation…</p>}>
+        <Invitation params={params} />
+      </Suspense>
+    </AuthShell>
   );
 }
 

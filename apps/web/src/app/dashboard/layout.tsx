@@ -1,14 +1,15 @@
 import { Suspense } from 'react';
 import { isCoachingRole } from '@continuum/shared';
 import { getCurrentUser } from '@/lib/auth';
-import { secondaryButtonClass } from '@/components/ui';
+import Link from 'next/link';
+import { Wordmark } from '@/components/brand';
 import { signOut } from '../actions';
 import { NavLinks } from './nav-links';
 
 export default function DashboardLayout({ children }: LayoutProps<'/dashboard'>) {
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-black">
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="flex flex-1 flex-col bg-zinc-50 dark:bg-zinc-950">
+      <header className="border-b border-zinc-800 bg-ink text-zinc-50">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <Suspense fallback={<HeaderSkeleton />}>
             <HeaderContent />
@@ -21,7 +22,7 @@ export default function DashboardLayout({ children }: LayoutProps<'/dashboard'>)
 }
 
 function HeaderSkeleton() {
-  return <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Continuum Elite</p>;
+  return <Wordmark size="sm" />;
 }
 
 async function HeaderContent() {
@@ -32,18 +33,20 @@ async function HeaderContent() {
   return (
     <>
       <div className="flex items-center gap-6">
-        <div>
-          <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">Continuum Elite</p>
-          {membership && <p className="text-xs text-zinc-500">{membership.organizationName}</p>}
-        </div>
+        <Link href="/dashboard" aria-label="Continuum Elite home">
+          <Wordmark size="sm" />
+        </Link>
         {isCoach && <NavLinks />}
       </div>
       <div className="flex items-center gap-3">
-        <span className="hidden text-sm text-zinc-600 sm:inline dark:text-zinc-400">
+        <span className="hidden text-sm text-zinc-400 sm:inline">
           {user.fullName ?? user.email}
         </span>
         <form action={signOut}>
-          <button type="submit" className={secondaryButtonClass}>
+          <button
+            type="submit"
+            className="rounded-md border border-zinc-700 px-3 py-1.5 text-xs font-semibold tracking-[0.15em] text-zinc-300 uppercase hover:border-slate hover:text-zinc-50"
+          >
             Sign out
           </button>
         </form>

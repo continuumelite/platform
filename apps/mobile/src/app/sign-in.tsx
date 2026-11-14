@@ -4,8 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { BRAND_VALUES, Wordmark } from '@/components/brand';
 import { Button, Input } from '@/components/ui';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
+import { BrandFonts, MaxContentWidth, Spacing } from '@/constants/theme';
 import { supabase } from '@/lib/supabase';
 
 export default function SignInScreen() {
@@ -35,8 +36,23 @@ export default function SignInScreen() {
           style={styles.content}
         >
           <View style={styles.header}>
-            <ThemedText type="subtitle">Continuum Elite</ThemedText>
-            <ThemedText themeColor="textSecondary">Sign in to see today’s plan.</ThemedText>
+            <Wordmark />
+            <View style={styles.values}>
+              {BRAND_VALUES.map((v) => (
+                <ThemedText
+                  key={v}
+                  type="small"
+                  themeColor={v === 'continuum' ? 'accent' : 'textSecondary'}
+                  style={[styles.value, v === 'continuum' && styles.valueAccent]}
+                >
+                  {v}
+                </ThemedText>
+              ))}
+            </View>
+            <ThemedText type="serifItalic">Continuum Elite</ThemedText>
+            <ThemedText type="subtitle" themeColor="accent">
+              Sign in to see today’s plan.
+            </ThemedText>
           </View>
 
           <View style={styles.form}>
@@ -82,7 +98,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     gap: Spacing.five,
   },
-  header: { gap: Spacing.two },
+  header: { gap: Spacing.three },
+  values: { flexDirection: 'row', flexWrap: 'wrap', marginVertical: Spacing.two },
+  value: {
+    width: '50%',
+    paddingVertical: 6,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#8A8988',
+  },
+  valueAccent: { fontFamily: BrandFonts.serifItalic },
   form: { gap: Spacing.three, maxWidth: MaxContentWidth },
   error: { color: '#dc2626', fontSize: 14 },
   footer: { textAlign: 'center' },
