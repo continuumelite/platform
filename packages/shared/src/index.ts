@@ -4,3 +4,4 @@ export type { Database, Json } from './database.types';
 export * from './exercises';
 export * from './programs';
 export * from './schedule';
+export * from './brand';

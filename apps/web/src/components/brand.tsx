@@ -1,37 +1,69 @@
 /**
- * Brand marks. The deck's logo direction is a simple wordmark: CONTINUUM in wide caps over a
- * small tracked line. This is a type-only stand-in until the final logo files exist; swap the
- * markup for the SVG when they do.
+ * Brand marks. The CE mark is a vector redraw of docs/brand/logo-reference.png (see
+ * docs/brand/mark.svg); it uses currentColor, so it works on light and dark backgrounds.
  */
+
+import { MARK } from '@continuum/shared';
 
 export const BRAND_VALUES = ['consistency', 'resilience', 'discipline', 'continuum'] as const;
 
+/** The CE mark on its own. Size it with a height class, e.g. `h-6`. */
+export function Mark({ className = '', title }: { className?: string; title?: string }) {
+  return (
+    <svg
+      viewBox={MARK.viewBox}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={`w-auto ${className}`}
+      role={title ? 'img' : undefined}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+    >
+      {MARK.paths.map((p) => (
+        <path key={p.d} d={p.d} strokeWidth={p.strokeWidth} />
+      ))}
+    </svg>
+  );
+}
+
+/** Mark + CONTINUUM side by side, for headers. */
 export function Wordmark({
-  size = 'md',
+  size = 'sm',
   className = '',
 }: {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md';
   className?: string;
 }) {
-  const main = {
-    sm: 'text-sm tracking-[0.28em]',
-    md: 'text-lg tracking-[0.3em]',
-    lg: 'text-3xl tracking-[0.32em]',
-  }[size];
-  const sub = {
-    sm: 'text-[0.55rem] tracking-[0.5em]',
-    md: 'text-[0.6rem] tracking-[0.55em]',
-    lg: 'text-xs tracking-[0.6em]',
-  }[size];
-
+  const mark = size === 'sm' ? 'h-5' : 'h-7';
+  const text = size === 'sm' ? 'text-sm tracking-[0.3em]' : 'text-lg tracking-[0.32em]';
   return (
     <span
-      className={`inline-flex flex-col items-start leading-none ${className}`}
-      aria-label="Continuum Elite"
+      className={`inline-flex items-center gap-3 leading-none ${className}`}
+      aria-label="Continuum"
     >
-      <span className={`font-semibold uppercase ${main}`}>Continuum</span>
-      <span className={`mt-1 font-medium uppercase opacity-70 ${sub}`}>Elite</span>
+      <Mark className={mark} />
+      <span aria-hidden className={`font-semibold uppercase ${text}`}>
+        Continuum
+      </span>
     </span>
+  );
+}
+
+/** The full logo: mark over CONTINUUM over the values line, centered (as in the logo file). */
+export function Logo({ className = '' }: { className?: string }) {
+  return (
+    <div className={`inline-flex flex-col items-center ${className}`} aria-label="Continuum">
+      <Mark className="h-20 sm:h-24" />
+      <span
+        aria-hidden
+        className="mt-4 text-2xl font-semibold tracking-[0.34em] uppercase sm:text-3xl"
+      >
+        Continuum
+      </span>
+      <ValuesLine className="mt-3 flex-nowrap justify-center gap-x-2 text-[0.5rem] whitespace-nowrap sm:text-[0.55rem]" />
+    </div>
   );
 }
 
@@ -39,7 +71,7 @@ export function Wordmark({
 export function ValuesLine({ className = '' }: { className?: string }) {
   return (
     <p
-      className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.65rem] uppercase tracking-[0.3em] ${className}`}
+      className={`flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.65rem] tracking-[0.3em] uppercase ${className}`}
     >
       {BRAND_VALUES.map((v, i) => (
         <span key={v} className="flex items-center gap-3">
