@@ -3,3 +3,4 @@ pnpm-lock.yaml
 .next
 dist
 .expo
+next-env.d.ts
