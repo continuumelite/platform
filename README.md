@@ -56,6 +56,16 @@ pnpm --filter @continuum/web dev
 | athlete.jordan@example.test | athlete                        |
 | athlete.casey@example.test  | athlete                        |
 
+### Try the sign-up flow
+
+1. Sign in on the web app (http://localhost:3000) as `coach.sam@example.test`.
+2. Under **Invite an athlete**, enter any email and choose **Create invite**, then **Copy invite link**.
+3. Sign out, open the link, and create the account. You land on the athlete page with Sam as your coach.
+4. Sign in with the same account in the mobile app to see the **Today** screen.
+
+Email sending isn't wired up yet, so coaches copy the invite link and send it themselves.
+Local Supabase doesn't require email confirmation. Staging and production will.
+
 ## Everyday commands
 
 | Command                                      | What it does                                        |

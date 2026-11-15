@@ -1,27 +1,36 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://unistyl.es/), etc.
+ * Continuum design system, from the app design brief (docs/brand/README.md):
+ * dark only — deep navy background, raised navy-grey cards, cream for the logo and key text,
+ * grey rules, and a red accent used sparingly (alerts, AI, open items).
+ * Headings use Anton (tall condensed), everything else DM Sans.
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
-export const Colors = {
-  light: {
-    text: '#000000',
-    background: '#ffffff',
-    backgroundElement: '#F0F0F3',
-    backgroundSelected: '#E0E1E6',
-    textSecondary: '#60646C',
-  },
-  dark: {
-    text: '#ffffff',
-    background: '#000000',
-    backgroundElement: '#212225',
-    backgroundSelected: '#2E3135',
-    textSecondary: '#B0B4BA',
-  },
+const palette = {
+  text: '#F3F1EC',
+  background: '#0E1725',
+  backgroundElement: '#232936',
+  backgroundSelected: '#343B4A',
+  textSecondary: '#9AA0AA',
+  accent: '#F3473D',
+  cream: '#E1DCCF',
+  rule: '#444953',
+} as const;
+
+/** The app is dark only; both schemes use the same palette. */
+export const Colors = { light: palette, dark: palette } as const;
+
+/** Font families loaded in the root layout (@expo-google-fonts). Custom fonts need one family per weight. */
+export const BrandFonts = {
+  display: 'Anton_400Regular',
+  regular: 'DMSans_400Regular',
+  italic: 'DMSans_400Regular_Italic',
+  medium: 'DMSans_500Medium',
+  semibold: 'DMSans_600SemiBold',
+  bold: 'DMSans_700Bold',
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;

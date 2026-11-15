@@ -1,10 +1,20 @@
-import { Platform, StyleSheet, Text, type TextProps } from 'react-native';
+import { StyleSheet, Text, type TextProps } from 'react-native';
 
-import { Fonts, ThemeColor } from '@/constants/theme';
+import { BrandFonts, Fonts, ThemeColor } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 export type ThemedTextProps = TextProps & {
-  type?: 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'link' | 'linkPrimary' | 'code';
+  type?:
+    | 'default'
+    | 'title'
+    | 'small'
+    | 'smallBold'
+    | 'subtitle'
+    | 'eyebrow'
+    | 'serifItalic'
+    | 'link'
+    | 'linkPrimary'
+    | 'code';
   themeColor?: ThemeColor;
 };
 
@@ -14,44 +24,60 @@ export function ThemedText({ style, type = 'default', themeColor, ...rest }: The
   return <Text style={[{ color: theme[themeColor ?? 'text'] }, styles[type], style]} {...rest} />;
 }
 
+// Custom fonts need a family per weight (fontWeight is ignored for them on Android).
 const styles = StyleSheet.create({
   small: {
+    fontFamily: BrandFonts.regular,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 500,
   },
   smallBold: {
+    fontFamily: BrandFonts.semibold,
     fontSize: 14,
     lineHeight: 20,
-    fontWeight: 700,
   },
   default: {
+    fontFamily: BrandFonts.regular,
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: 500,
   },
+  // Headings use Anton, the brief's tall condensed display face.
   title: {
-    fontSize: 48,
-    fontWeight: 600,
-    lineHeight: 52,
+    fontFamily: BrandFonts.display,
+    fontSize: 44,
+    lineHeight: 50,
   },
   subtitle: {
-    fontSize: 32,
-    lineHeight: 44,
-    fontWeight: 600,
+    fontFamily: BrandFonts.display,
+    fontSize: 30,
+    lineHeight: 38,
+  },
+  serifItalic: {
+    fontFamily: BrandFonts.italic,
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  // Small tracked caps for labels, like the deck's value line.
+  eyebrow: {
+    fontFamily: BrandFonts.medium,
+    fontSize: 11,
+    lineHeight: 16,
+    letterSpacing: 2.5,
+    textTransform: 'uppercase',
   },
   link: {
+    fontFamily: BrandFonts.regular,
     lineHeight: 30,
     fontSize: 14,
   },
   linkPrimary: {
+    fontFamily: BrandFonts.medium,
     lineHeight: 30,
     fontSize: 14,
-    color: '#3c87f7',
+    color: '#4F6470',
   },
   code: {
     fontFamily: Fonts.mono,
-    fontWeight: Platform.select({ android: 700 }) ?? 500,
     fontSize: 12,
   },
 });

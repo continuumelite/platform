@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 114" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Continuum "CE" mark, redrawn as a vector from logo-reference.png. Source of truth: packages/shared/src/brand.ts -->
+  <path stroke-width="22" d="M244 12 H178 Q158 12 146 25.4 L90.4 87.1 A45 45 0 1 1 96 34.5" />
+  <path stroke-width="22" d="M146 80 Q150 102 178 102 H244" />
+  <path stroke-width="18" d="M180 57 H220" />
+</svg>

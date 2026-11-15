@@ -1,0 +1,127 @@
+import { entitlementsSchema, type Entitlements, type OrgRole } from '@continuum/shared';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+
+import { fetchCurrentProgram, type CurrentProgram } from './program';
+import { useSession } from './session';
+import { supabase } from './supabase';
+import { flushFoodOutbox } from './nutrition';
+import { fetchCompletedSessions, flushOutbox, pendingUploads } from './workouts';
+
+/** Everything the Home and Training tabs need about the signed-in person. */
+export type HomeData = {
+  firstName: string | null;
+  fullName: string | null;
+  email: string | null;
+  role: OrgRole | null;
+  /** Null for coaches. */
+  athleteProfileId: string | null;
+  organizationId: string | null;
+  organizationName: string | null;
+  coachName: string | null;
+  goals: string | null;
+  program: CurrentProgram | null;
+  /** Session id → date it was completed. */
+  completed: Map<string, string>;
+  pendingUploads: number;
+  /** Messages from coaches the athlete hasn't read yet. */
+  unreadMessages: number;
+  /** What this person's subscription level includes; null if it couldn't be loaded (e.g. offline). */
+  entitlements: Entitlements | null;
+};
+
+async function fetchHome(userId: string, email: string | null): Promise<HomeData> {
+  // Upload any workouts saved while offline before showing what's done.
+  await Promise.all([
+    flushOutbox().catch(() => undefined),
+    flushFoodOutbox().catch(() => undefined),
+  ]);
+
+  const [profile, membership, athlete, program, plan, unread] = await Promise.all([
+    supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
+    supabase
+      .from('memberships')
+      .select('role, organization_id, organizations(name)')
+      .eq('user_id', userId)
+      .limit(1)
+      .maybeSingle(),
+    supabase
+      .from('athlete_profiles')
+      .select('id, goals, coaches:coach_athletes(role, coach:profiles(full_name))')
+      .eq('user_id', userId)
+      .maybeSingle(),
+    fetchCurrentProgram(userId),
+    supabase.rpc('my_plan'),
+    supabase.rpc('my_unread_messages'),
+  ]);
+  if (profile.error || membership.error || athlete.error) throw new Error('Could not load home');
+
+  const sessionIds =
+    program?.document.blocks.flatMap((b) => b.weeks.flatMap((w) => w.sessions.map((s) => s.id))) ??
+    [];
+  const completed = program
+    ? await fetchCompletedSessions(program.athleteProfileId, sessionIds).catch(
+        () => new Map<string, string>(),
+      )
+    : new Map<string, string>();
+
+  return {
+    firstName: profile.data?.full_name?.split(' ')[0] ?? null,
+    fullName: profile.data?.full_name ?? null,
+    email,
+    role: membership.data?.role ?? null,
+    athleteProfileId: athlete.data?.id ?? null,
+    organizationId: membership.data?.organization_id ?? null,
+    organizationName: membership.data?.organizations?.name ?? null,
+    coachName: athlete.data?.coaches.find((c) => c.role === 'primary')?.coach?.full_name ?? null,
+    goals: athlete.data?.goals ?? null,
+    program,
+    completed,
+    pendingUploads: pendingUploads().length,
+    unreadMessages: (unread.data ?? []).reduce((n, t) => n + t.unread, 0),
+    entitlements: entitlementsSchema.safeParse(plan.data).data ?? null,
+  };
+}
+
+/** Loads home data, reloading whenever the screen comes back into view, with pull-to-refresh. */
+export function useHomeData() {
+  const { session } = useSession();
+  const userId = session?.user.id;
+  const email = session?.user.email ?? null;
+  const [data, setData] = useState<HomeData | null>(null);
+  const [error, setError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!userId) return;
+      let active = true;
+      fetchHome(userId, email).then(
+        (result) => {
+          if (!active) return;
+          setData(result);
+          setError(false);
+        },
+        () => active && setError(true),
+      );
+      return () => {
+        active = false;
+      };
+    }, [userId, email]),
+  );
+
+  const refresh = useCallback(async () => {
+    if (!userId) return;
+    setRefreshing(true);
+    try {
+      setData(await fetchHome(userId, email));
+      setError(false);
+    } catch {
+      setError(true);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [userId, email]);
+
+  return { data, error, refreshing, refresh };
+}

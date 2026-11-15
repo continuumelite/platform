@@ -1,3 +1,14 @@
 export * from './roles';
 export * from './training';
 export type { Database, Json } from './database.types';
+export * from './exercises';
+export * from './programs';
+export * from './schedule';
+export * from './brand';
+export * from './workouts';
+export * from './features';
+export * from './community';
+export * from './nutrition';
+export * from './messaging';
+export * from './athlete-program';
+export * from './activities';
