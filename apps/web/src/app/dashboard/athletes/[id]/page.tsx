@@ -7,6 +7,7 @@ import { getCoachContext } from '@/lib/coach';
 import { createClient } from '@/lib/supabase/server';
 import { Card, secondaryButtonClass } from '@/components/ui';
 import { StatusBadge } from '../../programs/status-badge';
+import { PlanPicker } from './plan-picker';
 
 export default function AthletePage({ params }: PageProps<'/dashboard/athletes/[id]'>) {
   return (
@@ -53,31 +54,49 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
   await getCoachContext();
   const supabase = await createClient();
 
-  const [{ data: athlete }, { data: programs }, { data: workouts }] = await Promise.all([
-    supabase
-      .from('athlete_profiles')
-      .select('id, goals, injuries, profile:profiles(full_name)')
-      .eq('id', id)
-      .maybeSingle(),
-    supabase
-      .from('programs')
-      .select('id, name, status, start_date')
-      .eq('athlete_profile_id', id)
-      .neq('status', 'archived')
-      .order('start_date', { ascending: false }),
-    supabase
-      .from('workout_logs')
-      .select(
-        'id, session_name, performed_on, completed_at, rpe, notes, sets:set_logs(id, exercise_id, position, set_number, reps, load, load_unit, duration_seconds, distance_meters, rpe, completed, exercise:exercises(name, tracking))',
-      )
-      .eq('athlete_profile_id', id)
-      .order('performed_on', { ascending: false })
-      .limit(20),
-  ]);
+  const [{ data: athlete }, { data: programs }, { data: workouts }, { data: plans }] =
+    await Promise.all([
+      supabase
+        .from('athlete_profiles')
+        .select(
+          'id, organization_id, goals, injuries, profile:profiles(full_name), subscription:subscriptions(plan_id, source, status)',
+        )
+        .eq('id', id)
+        .maybeSingle(),
+      supabase
+        .from('programs')
+        .select('id, name, status, start_date')
+        .eq('athlete_profile_id', id)
+        .neq('status', 'archived')
+        .order('start_date', { ascending: false }),
+      supabase
+        .from('workout_logs')
+        .select(
+          'id, session_name, performed_on, completed_at, rpe, notes, sets:set_logs(id, exercise_id, position, set_number, reps, load, load_unit, duration_seconds, distance_meters, rpe, completed, exercise:exercises(name, tracking))',
+        )
+        .eq('athlete_profile_id', id)
+        .order('performed_on', { ascending: false })
+        .limit(20),
+      supabase.from('plans').select('id, name, level, is_default').order('level'),
+    ]);
 
   // Row-level security hides athletes this coach doesn't work with.
   if (!athlete) notFound();
   const name = athlete.profile?.full_name ?? 'Athlete';
+  const planOptions = (plans ?? []).map((p) => ({
+    id: p.id,
+    name: p.name,
+    level: p.level,
+    isDefault: p.is_default,
+  }));
+  const subscription = athlete.subscription;
+  const paidPlan =
+    subscription && subscription.source !== 'manual'
+      ? {
+          planName: planOptions.find((p) => p.id === subscription.plan_id)?.name ?? 'Plan',
+          source: subscription.source.replace('_', ' '),
+        }
+      : null;
 
   return (
     <>
@@ -96,6 +115,21 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
           New program
         </Link>
       </div>
+
+      <Card className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 className="text-base font-semibold">Subscription level</h2>
+          <p className="text-sm text-zinc-400">
+            Sets what {name.split(' ')[0]} can use in the app.
+          </p>
+        </div>
+        <PlanPicker
+          athleteProfileId={athlete.id}
+          plans={planOptions}
+          currentPlanId={subscription?.source === 'manual' ? subscription.plan_id : null}
+          paid={paidPlan}
+        />
+      </Card>
 
       <Card className="p-0">
         <h2 className="px-6 pt-5 pb-2 text-base font-semibold">Programs</h2>

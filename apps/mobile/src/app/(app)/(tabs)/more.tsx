@@ -37,7 +37,11 @@ export default function MoreScreen() {
               {data?.fullName ?? 'Your profile'}
             </ThemedText>
             <ThemedText type="small" themeColor="textSecondary" numberOfLines={1}>
-              {[data?.organizationName, data?.coachName ? `Coach: ${data.coachName}` : null]
+              {[
+                data?.entitlements?.tiersEnabled ? data.entitlements.plan?.name : null,
+                data?.organizationName,
+                data?.coachName ? `Coach: ${data.coachName}` : null,
+              ]
                 .filter(Boolean)
                 .join(' · ') || data?.email}
             </ThemedText>

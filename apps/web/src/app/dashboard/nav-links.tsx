@@ -7,6 +7,7 @@ const links = [
   { href: '/dashboard', label: 'Athletes' },
   { href: '/dashboard/programs', label: 'Programs' },
   { href: '/dashboard/exercises', label: 'Exercises' },
+  { href: '/dashboard/plans', label: 'Plans' },
 ] as const;
 
 export function NavLinks() {

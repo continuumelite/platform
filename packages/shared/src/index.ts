@@ -6,3 +6,4 @@ export * from './programs';
 export * from './schedule';
 export * from './brand';
 export * from './workouts';
+export * from './features';

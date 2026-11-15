@@ -15,6 +15,7 @@ import { StartButton } from '@/components/start-button';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { canUse } from '@/lib/entitlements';
 import { useHomeData, type HomeData } from '@/lib/home';
 import type { CurrentProgram } from '@/lib/program';
 
@@ -57,7 +58,13 @@ function TrainingBody({ data }: { data: HomeData }) {
       </Card>
     );
   }
-  return <ProgramCalendar program={data.program} completed={data.completed} />;
+  return (
+    <ProgramCalendar
+      program={data.program}
+      completed={data.completed}
+      canLog={canUse(data.entitlements, 'training.logging')}
+    />
+  );
 }
 
 function addDays(date: string, days: number) {
@@ -69,9 +76,11 @@ function addDays(date: string, days: number) {
 function ProgramCalendar({
   program,
   completed,
+  canLog,
 }: {
   program: CurrentProgram;
   completed: Map<string, string>;
+  canLog: boolean;
 }) {
   const theme = useTheme();
   const today = localDateString();
@@ -227,7 +236,12 @@ function ProgramCalendar({
             {open && (
               <View style={styles.sessionDetail}>
                 <SessionView session={s} exercises={program.exercises} />
-                <StartButton sessionId={s.id} completedOn={completed.get(s.id)} today={today} />
+                <StartButton
+                  sessionId={s.id}
+                  completedOn={completed.get(s.id)}
+                  today={today}
+                  locked={!canLog}
+                />
               </View>
             )}
           </View>

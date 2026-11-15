@@ -7,6 +7,7 @@ import { StartButton } from '@/components/start-button';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { canUse } from '@/lib/entitlements';
 import { useHomeData, type HomeData } from '@/lib/home';
 
 /**
@@ -94,7 +95,12 @@ function AthleteHome({ data }: { data: HomeData }) {
               <ThemedText type="small" themeColor="textSecondary">
                 {s.exercises.length} exercise{s.exercises.length === 1 ? '' : 's'}
               </ThemedText>
-              <StartButton sessionId={s.id} completedOn={data.completed.get(s.id)} today={today} />
+              <StartButton
+                sessionId={s.id}
+                completedOn={data.completed.get(s.id)}
+                today={today}
+                locked={!canUse(data.entitlements, 'training.logging')}
+              />
             </View>
           ))
         ) : (

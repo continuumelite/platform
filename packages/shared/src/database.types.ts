@@ -199,17 +199,57 @@ isOneToOne: false
                   ]
                 },"organizations": {
                   Row: {
-                    "created_at": string,"id": string,"name": string,"updated_at": string
+                    "created_at": string,"feature_tiers_enabled": boolean,"id": string,"name": string,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"id"?: string,"name": string,"updated_at"?: string
+                    "created_at"?: string,"feature_tiers_enabled"?: boolean,"id"?: string,"name": string,"updated_at"?: string
                   }
                   Update: {
-                    "created_at"?: string,"id"?: string,"name"?: string,"updated_at"?: string
+                    "created_at"?: string,"feature_tiers_enabled"?: boolean,"id"?: string,"name"?: string,"updated_at"?: string
                   }
                   Relationships: [
                     
+                  ]
+                },"plan_features": {
+                  Row: {
+                    "feature_key": string,"plan_id": string,"usage_limit": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "feature_key": string,"plan_id": string,"usage_limit"?: number | null
+                  }
+                  Update: {
+                    "feature_key"?: string,"plan_id"?: string,"usage_limit"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "plan_features_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"plans": {
+                  Row: {
+                    "created_at": string,"description": string | null,"id": string,"is_default": boolean,"level": number,"name": string,"organization_id": string,"price_cents": number | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"is_default"?: boolean,"level": number,"name": string,"organization_id": string,"price_cents"?: number | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"description"?: string | null,"id"?: string,"is_default"?: boolean,"level"?: number,"name"?: string,"organization_id"?: string,"price_cents"?: number | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "plans_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"profiles": {
                   Row: {
@@ -431,6 +471,32 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"subscriptions": {
+                  Row: {
+                    "athlete_profile_id": string,"created_at": string,"current_period_end": string | null,"external_id": string | null,"id": string,"plan_id": string,"source": Database["public"]['Enums']["subscription_source"],"status": Database["public"]['Enums']["subscription_status"],"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"created_at"?: string,"current_period_end"?: string | null,"external_id"?: string | null,"id"?: string,"plan_id": string,"source"?: Database["public"]['Enums']["subscription_source"],"status"?: Database["public"]['Enums']["subscription_status"],"updated_at"?: string
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"created_at"?: string,"current_period_end"?: string | null,"external_id"?: string | null,"id"?: string,"plan_id"?: string,"source"?: Database["public"]['Enums']["subscription_source"],"status"?: Database["public"]['Enums']["subscription_status"],"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "subscriptions_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: true
+      referencedRelation: "athlete_profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "subscriptions_plan_id_fkey"
+      columns: ["plan_id"]
+isOneToOne: false
+      referencedRelation: "plans"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"workout_logs": {
                   Row: {
                     "athlete_profile_id": string,"completed_at": string | null,"created_at": string,"id": string,"notes": string | null,"organization_id": string,"performed_on": string,"program_id": string | null,"rpe": number | null,"session_id": string | null,"session_name": string,"started_at": string | null,"updated_at": string
@@ -486,6 +552,12 @@ isOneToOne: false
               "email": string,"invited_by_name": string,"is_accepted": boolean,"is_expired": boolean,"organization_name": string,"role": Database["public"]['Enums']["org_role"]
             }[]
                            },
+"my_plan":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"save_plan_settings":
+{ Args: { "document": Json,"org_id": string }; Returns: undefined
+                           },
 "save_program":
 { Args: { "document": Json,"expected_version": number,"reason"?: string,"target_program_id": string }; Returns: number
                            },
@@ -494,7 +566,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "coach_assignment_role": "primary"|"nutrition"|"assistant","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived"
+            "coach_assignment_role": "primary"|"nutrition"|"assistant","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived","subscription_source": "manual"|"stripe"|"app_store"|"play_store","subscription_status": "active"|"trialing"|"past_due"|"canceled"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -614,7 +686,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "coach_assignment_role": ["primary", "nutrition", "assistant"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"]
+            "coach_assignment_role": ["primary", "nutrition", "assistant"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"],"subscription_source": ["manual", "stripe", "app_store", "play_store"],"subscription_status": ["active", "trialing", "past_due", "canceled"]
           }
         }
 } as const

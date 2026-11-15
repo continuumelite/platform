@@ -1,4 +1,4 @@
-import type { OrgRole } from '@continuum/shared';
+import { entitlementsSchema, type Entitlements, type OrgRole } from '@continuum/shared';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
@@ -20,13 +20,15 @@ export type HomeData = {
   /** Session id → date it was completed. */
   completed: Map<string, string>;
   pendingUploads: number;
+  /** What this person's subscription level includes; null if it couldn't be loaded (e.g. offline). */
+  entitlements: Entitlements | null;
 };
 
 async function fetchHome(userId: string, email: string | null): Promise<HomeData> {
   // Upload any workouts saved while offline before showing what's done.
   await flushOutbox().catch(() => undefined);
 
-  const [profile, membership, athlete, program] = await Promise.all([
+  const [profile, membership, athlete, program, plan] = await Promise.all([
     supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
     supabase
       .from('memberships')
@@ -40,6 +42,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
       .eq('user_id', userId)
       .maybeSingle(),
     fetchCurrentProgram(userId),
+    supabase.rpc('my_plan'),
   ]);
   if (profile.error || membership.error || athlete.error) throw new Error('Could not load home');
 
@@ -63,6 +66,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     program,
     completed,
     pendingUploads: pendingUploads().length,
+    entitlements: entitlementsSchema.safeParse(plan.data).data ?? null,
   };
 }
 
