@@ -21,6 +21,7 @@ export default function AppLayout() {
       <Stack.Screen name="more/[tool]" options={{ headerShown: true }} />
       <Stack.Screen name="community/index" options={{ headerShown: true }} />
       <Stack.Screen name="community/[postId]" options={{ headerShown: true }} />
+      <Stack.Screen name="messages/index" options={{ headerShown: true }} />
       <Stack.Screen name="nutrition/add" options={{ headerShown: true, presentation: 'modal' }} />
     </Stack>
   );

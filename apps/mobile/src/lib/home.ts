@@ -24,6 +24,8 @@ export type HomeData = {
   /** Session id → date it was completed. */
   completed: Map<string, string>;
   pendingUploads: number;
+  /** Messages from coaches the athlete hasn't read yet. */
+  unreadMessages: number;
   /** What this person's subscription level includes; null if it couldn't be loaded (e.g. offline). */
   entitlements: Entitlements | null;
 };
@@ -35,7 +37,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     flushFoodOutbox().catch(() => undefined),
   ]);
 
-  const [profile, membership, athlete, program, plan] = await Promise.all([
+  const [profile, membership, athlete, program, plan, unread] = await Promise.all([
     supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
     supabase
       .from('memberships')
@@ -50,6 +52,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
       .maybeSingle(),
     fetchCurrentProgram(userId),
     supabase.rpc('my_plan'),
+    supabase.rpc('my_unread_messages'),
   ]);
   if (profile.error || membership.error || athlete.error) throw new Error('Could not load home');
 
@@ -75,6 +78,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     program,
     completed,
     pendingUploads: pendingUploads().length,
+    unreadMessages: (unread.data ?? []).reduce((n, t) => n + t.unread, 0),
     entitlements: entitlementsSchema.safeParse(plan.data).data ?? null,
   };
 }

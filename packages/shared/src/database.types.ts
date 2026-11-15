@@ -333,6 +333,78 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"message_reads": {
+                  Row: {
+                    "last_read_at": string,"thread_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "last_read_at"?: string,"thread_id": string,"user_id": string
+                  }
+                  Update: {
+                    "last_read_at"?: string,"thread_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "message_reads_thread_id_fkey"
+      columns: ["thread_id"]
+isOneToOne: false
+      referencedRelation: "message_threads"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "message_reads_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"message_threads": {
+                  Row: {
+                    "athlete_profile_id": string,"created_at": string,"id": string,"last_message_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"created_at"?: string,"id"?: string,"last_message_at"?: string | null
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"created_at"?: string,"id"?: string,"last_message_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "message_threads_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: true
+      referencedRelation: "athlete_profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"messages": {
+                  Row: {
+                    "body": string,"created_at": string,"id": string,"sender_id": string,"thread_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"created_at"?: string,"id": string,"sender_id": string,"thread_id": string
+                  }
+                  Update: {
+                    "body"?: string,"created_at"?: string,"id"?: string,"sender_id"?: string,"thread_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "messages_sender_id_fkey"
+      columns: ["sender_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "messages_thread_id_fkey"
+      columns: ["thread_id"]
+isOneToOne: false
+      referencedRelation: "message_threads"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"nutrition_targets": {
                   Row: {
                     "athlete_profile_id": string,"calories": number | null,"carbs_g": number | null,"created_at": string,"day_type": Database["public"]['Enums']["nutrition_day_type"],"fat_g": number | null,"id": string,"notes": string | null,"protein_g": number | null,"set_by": string | null,"updated_at": string
@@ -714,8 +786,16 @@ isOneToOne: false
               "email": string,"invited_by_name": string,"is_accepted": boolean,"is_expired": boolean,"organization_name": string,"role": Database["public"]['Enums']["org_role"]
             }[]
                            },
+"get_message_thread":
+{ Args: { "target_athlete_profile_id": string }; Returns: string
+                           },
 "my_plan":
 { Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"my_unread_messages":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "athlete_profile_id": string,"last_message_at": string,"thread_id": string,"unread": number
+            }[]
                            },
 "save_plan_settings":
 { Args: { "document": Json,"org_id": string }; Returns: undefined

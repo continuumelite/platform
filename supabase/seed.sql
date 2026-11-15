@@ -174,3 +174,10 @@ insert into public.nutrition_targets (athlete_profile_id, day_type, calories, pr
 insert into public.food_logs (id, athlete_profile_id, logged_on, meal, name, quantity, calories, protein_g, carbs_g, fat_g) values
   ('80000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000004', current_date,
    'breakfast', 'Greek yogurt with berries and granola', '1 bowl', 420, 32, 52, 9);
+
+-- Messaging: a short conversation between coach Sam and Jordan.
+insert into public.message_threads (id, athlete_profile_id) values
+  ('90000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000004');
+insert into public.messages (id, thread_id, sender_id, body) values
+  ('91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000001',
+   '00000000-0000-0000-0000-000000000002', 'Welcome aboard! Your first block starts this week. Shout if anything feels off.');

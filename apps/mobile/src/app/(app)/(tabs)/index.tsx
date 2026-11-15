@@ -76,6 +76,16 @@ function AthleteHome({ data }: { data: HomeData }) {
         </Card>
       )}
 
+      {data.unreadMessages > 0 && (
+        <Pressable accessibilityRole="button" onPress={() => router.push('/messages')}>
+          <Card title="Coach hub" source={`${data.unreadMessages} new`}>
+            <ThemedText>
+              {data.coachName ?? 'Your coach'} sent you a message. Tap to read and reply.
+            </ThemedText>
+          </Card>
+        </Pressable>
+      )}
+
       {/* Today */}
       <Card title="Today">
         {!data.program ? (

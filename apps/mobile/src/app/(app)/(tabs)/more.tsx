@@ -58,7 +58,9 @@ export default function MoreScreen() {
               onPress={() =>
                 tool.slug === 'community'
                   ? router.push('/community')
-                  : router.push({ pathname: '/more/[tool]', params: { tool: tool.slug } })
+                  : tool.slug === 'coach'
+                    ? router.push('/messages')
+                    : router.push({ pathname: '/more/[tool]', params: { tool: tool.slug } })
               }
               style={({ pressed }) => [styles.row, pressed && { opacity: 0.6 }]}
             >

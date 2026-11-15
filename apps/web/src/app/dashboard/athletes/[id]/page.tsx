@@ -141,12 +141,17 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
           <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">{name}</h1>
           {athlete.goals && <p className="mt-1 text-sm text-zinc-500">Goal: {athlete.goals}</p>}
         </div>
-        <Link
-          href={`/dashboard/programs/new?athlete=${athlete.id}`}
-          className={secondaryButtonClass}
-        >
-          New program
-        </Link>
+        <div className="flex gap-2">
+          <Link href={`/dashboard/messages/${athlete.id}`} className={secondaryButtonClass}>
+            Message
+          </Link>
+          <Link
+            href={`/dashboard/programs/new?athlete=${athlete.id}`}
+            className={secondaryButtonClass}
+          >
+            New program
+          </Link>
+        </div>
       </div>
 
       <Card className="flex flex-wrap items-center justify-between gap-3">
