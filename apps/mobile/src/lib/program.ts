@@ -3,6 +3,7 @@ import {
   pickCurrentProgram,
   type LoadType,
   type ProgramDocument,
+  type Tracking,
 } from '@continuum/shared';
 
 import { supabase } from './supabase';
@@ -11,15 +12,23 @@ export type ExerciseInfo = {
   name: string;
   instructions: string | null;
   videoUrl: string | null;
+  tracking: Tracking;
 };
 
 export type CurrentProgram = {
   id: string;
+  athleteProfileId: string;
   name: string;
   startDate: string | null;
   document: ProgramDocument;
   exercises: Map<string, ExerciseInfo>;
 };
+
+// The last program loaded, so the workout screen can open instantly from Today.
+let lastLoaded: CurrentProgram | null = null;
+export function cachedProgram() {
+  return lastLoaded;
+}
 
 const byPosition = <T extends { position: number }>(a: T, b: T) => a.position - b.position;
 
@@ -32,13 +41,13 @@ export async function fetchCurrentProgram(userId: string): Promise<CurrentProgra
     .from('programs')
     .select(
       `id, name, description, start_date, status,
-       athlete:athlete_profiles!inner(user_id),
+       athlete:athlete_profiles!inner(id, user_id),
        blocks:program_blocks(id, position, name, notes,
          weeks:program_weeks(id, position, is_deload, notes,
            sessions:program_sessions(id, position, name, day_of_week, notes,
              exercises:session_exercises(id, position, exercise_id, sets, reps, load_type, load_value,
                rpe, tempo, rest_seconds, superset, notes,
-               exercise:exercises(name, instructions, video_url)))))`,
+               exercise:exercises(name, instructions, video_url, tracking)))))`,
     )
     .eq('athlete.user_id', userId)
     .eq('status', 'active');
@@ -75,6 +84,7 @@ export async function fetchCurrentProgram(userId: string): Promise<CurrentProgra
                 name: e.exercise.name,
                 instructions: e.exercise.instructions,
                 videoUrl: e.exercise.video_url,
+                tracking: e.exercise.tracking,
               });
             }
             return {
@@ -96,5 +106,14 @@ export async function fetchCurrentProgram(userId: string): Promise<CurrentProgra
     })),
   };
 
-  return { id: current.id, name: current.name, startDate: current.start_date, document, exercises };
+  const program: CurrentProgram = {
+    id: current.id,
+    athleteProfileId: current.athlete.id,
+    name: current.name,
+    startDate: current.start_date,
+    document,
+    exercises,
+  };
+  lastLoaded = program;
+  return program;
 }

@@ -24,7 +24,7 @@ async function Dashboard() {
   if (!membership) {
     return (
       <Card>
-        <h1 className="text-lg font-semibold">You’re not part of a coaching team yet</h1>
+        <h1 className="text-2xl">You’re not part of a coaching team yet</h1>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           Ask your coach for an invitation link.
         </p>
@@ -60,7 +60,7 @@ async function CoachDashboard({ user, membership }: { user: CurrentUser; members
   return (
     <>
       <div>
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">
           Welcome, {user.fullName?.split(' ')[0] ?? 'coach'}
         </h1>
         <p className="mt-1 text-sm text-zinc-500">
@@ -76,18 +76,21 @@ async function CoachDashboard({ user, membership }: { user: CurrentUser; members
               const isMine = a.coaches.some((c) => c.coach_user_id === user.id);
               return (
                 <li key={a.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="text-sm font-medium">
+                  <Link href={`/dashboard/athletes/${a.id}`} className="group">
+                    <p className="text-sm font-medium group-hover:underline">
                       {a.profile?.full_name ?? 'Unnamed athlete'}
                     </p>
                     <p className="text-xs text-zinc-500">{a.goals ?? 'No goals set yet'}</p>
-                  </div>
+                  </Link>
                   <div className="flex items-center gap-2">
                     {isMine && (
                       <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
                         Your athlete
                       </span>
                     )}
+                    <Link href={`/dashboard/athletes/${a.id}`} className={secondaryButtonClass}>
+                      Workouts
+                    </Link>
                     <Link
                       href={`/dashboard/programs?athlete=${a.id}`}
                       className={secondaryButtonClass}
@@ -158,7 +161,7 @@ async function AthleteHome({ user }: { user: CurrentUser }) {
 
   return (
     <Card>
-      <h1 className="text-2xl font-semibold">Hi {user.fullName?.split(' ')[0] ?? 'there'}</h1>
+      <h1 className="text-4xl">Hi {user.fullName?.split(' ')[0] ?? 'there'}</h1>
       <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
         {primary?.coach?.full_name ? `Your coach is ${primary.coach.full_name}. ` : ''}
         Your training plan and logging live in the Continuum Elite mobile app.
