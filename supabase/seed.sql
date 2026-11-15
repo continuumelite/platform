@@ -165,3 +165,12 @@ insert into public.community_comments (post_id, author_id, body, created_at) val
 
 insert into public.community_reactions (post_id, user_id) values
   ('70000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000004');
+
+-- Nutrition: Jordan's targets (more carbs on training days) and a logged breakfast.
+insert into public.nutrition_targets (athlete_profile_id, day_type, calories, protein_g, carbs_g, fat_g, notes) values
+  ('20000000-0000-0000-0000-000000000004', 'any', 2400, 160, 260, 80, 'Protein at every meal.'),
+  ('20000000-0000-0000-0000-000000000004', 'training', 2700, 170, 320, 80, null);
+
+insert into public.food_logs (id, athlete_profile_id, logged_on, meal, name, quantity, calories, protein_g, carbs_g, fat_g) values
+  ('80000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000004', current_date,
+   'breakfast', 'Greek yogurt with berries and granola', '1 bowl', 420, 32, 52, 9);

@@ -8,3 +8,4 @@ export * from './brand';
 export * from './workouts';
 export * from './features';
 export * from './community';
+export * from './nutrition';

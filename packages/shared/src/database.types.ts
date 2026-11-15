@@ -249,6 +249,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"food_logs": {
+                  Row: {
+                    "athlete_profile_id": string,"calories": number,"carbs_g": number,"created_at": string,"fat_g": number,"id": string,"logged_on": string,"meal": Database["public"]['Enums']["meal_slot"],"name": string,"protein_g": number,"quantity": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"calories"?: number,"carbs_g"?: number,"created_at"?: string,"fat_g"?: number,"id": string,"logged_on": string,"meal": Database["public"]['Enums']["meal_slot"],"name": string,"protein_g"?: number,"quantity"?: string | null
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"calories"?: number,"carbs_g"?: number,"created_at"?: string,"fat_g"?: number,"id"?: string,"logged_on"?: string,"meal"?: Database["public"]['Enums']["meal_slot"],"name"?: string,"protein_g"?: number,"quantity"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "food_logs_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: false
+      referencedRelation: "athlete_profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"invitations": {
                   Row: {
                     "accepted_at": string | null,"accepted_by": string | null,"coach_user_id": string | null,"created_at": string,"email": string,"expires_at": string,"id": string,"invited_by": string,"organization_id": string,"role": Database["public"]['Enums']["org_role"],"token": string
@@ -308,6 +328,32 @@ isOneToOne: false
     },{
       foreignKeyName: "memberships_user_id_fkey"
       columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"nutrition_targets": {
+                  Row: {
+                    "athlete_profile_id": string,"calories": number | null,"carbs_g": number | null,"created_at": string,"day_type": Database["public"]['Enums']["nutrition_day_type"],"fat_g": number | null,"id": string,"notes": string | null,"protein_g": number | null,"set_by": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"calories"?: number | null,"carbs_g"?: number | null,"created_at"?: string,"day_type"?: Database["public"]['Enums']["nutrition_day_type"],"fat_g"?: number | null,"id"?: string,"notes"?: string | null,"protein_g"?: number | null,"set_by"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"calories"?: number | null,"carbs_g"?: number | null,"created_at"?: string,"day_type"?: Database["public"]['Enums']["nutrition_day_type"],"fat_g"?: number | null,"id"?: string,"notes"?: string | null,"protein_g"?: number | null,"set_by"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "nutrition_targets_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: false
+      referencedRelation: "athlete_profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "nutrition_targets_set_by_fkey"
+      columns: ["set_by"]
 isOneToOne: false
       referencedRelation: "profiles"
       referencedColumns: ["id"]
@@ -682,7 +728,7 @@ isOneToOne: false
                            }
           }
           Enums: {
-            "coach_assignment_role": "primary"|"nutrition"|"assistant","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived","subscription_source": "manual"|"stripe"|"app_store"|"play_store","subscription_status": "active"|"trialing"|"past_due"|"canceled"
+            "coach_assignment_role": "primary"|"nutrition"|"assistant","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","nutrition_day_type": "any"|"training"|"rest","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived","subscription_source": "manual"|"stripe"|"app_store"|"play_store","subscription_status": "active"|"trialing"|"past_due"|"canceled"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -802,7 +848,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "coach_assignment_role": ["primary", "nutrition", "assistant"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"],"subscription_source": ["manual", "stripe", "app_store", "play_store"],"subscription_status": ["active", "trialing", "past_due", "canceled"]
+            "coach_assignment_role": ["primary", "nutrition", "assistant"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"nutrition_day_type": ["any", "training", "rest"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"],"subscription_source": ["manual", "stripe", "app_store", "play_store"],"subscription_status": ["active", "trialing", "past_due", "canceled"]
           }
         }
 } as const

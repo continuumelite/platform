@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { fetchCurrentProgram, type CurrentProgram } from './program';
 import { useSession } from './session';
 import { supabase } from './supabase';
+import { flushFoodOutbox } from './nutrition';
 import { fetchCompletedSessions, flushOutbox, pendingUploads } from './workouts';
 
 /** Everything the Home and Training tabs need about the signed-in person. */
@@ -13,6 +14,8 @@ export type HomeData = {
   fullName: string | null;
   email: string | null;
   role: OrgRole | null;
+  /** Null for coaches. */
+  athleteProfileId: string | null;
   organizationId: string | null;
   organizationName: string | null;
   coachName: string | null;
@@ -27,7 +30,10 @@ export type HomeData = {
 
 async function fetchHome(userId: string, email: string | null): Promise<HomeData> {
   // Upload any workouts saved while offline before showing what's done.
-  await flushOutbox().catch(() => undefined);
+  await Promise.all([
+    flushOutbox().catch(() => undefined),
+    flushFoodOutbox().catch(() => undefined),
+  ]);
 
   const [profile, membership, athlete, program, plan] = await Promise.all([
     supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
@@ -39,7 +45,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
       .maybeSingle(),
     supabase
       .from('athlete_profiles')
-      .select('goals, coaches:coach_athletes(role, coach:profiles(full_name))')
+      .select('id, goals, coaches:coach_athletes(role, coach:profiles(full_name))')
       .eq('user_id', userId)
       .maybeSingle(),
     fetchCurrentProgram(userId),
@@ -61,6 +67,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     fullName: profile.data?.full_name ?? null,
     email,
     role: membership.data?.role ?? null,
+    athleteProfileId: athlete.data?.id ?? null,
     organizationId: membership.data?.organization_id ?? null,
     organizationName: membership.data?.organizations?.name ?? null,
     coachName: athlete.data?.coaches.find((c) => c.role === 'primary')?.coach?.full_name ?? null,
