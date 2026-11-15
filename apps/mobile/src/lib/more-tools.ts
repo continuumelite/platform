@@ -4,7 +4,7 @@ import type { ComponentProps } from 'react';
 
 type IconName = ComponentProps<typeof Ionicons>['name'];
 
-/** Everything that lives under the More tab (brief, slide 4). Only Upgrade is built so far. */
+/** Everything that lives under the More tab (brief, slide 4). Coach hub, Community, Devices and Upgrade are built. */
 export const MORE_TOOLS: {
   slug: string;
   title: string;

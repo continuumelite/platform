@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Card, SoonTag, TabScreen } from '@/components/layout';
 import { LockedCard } from '@/components/locked';
 import { ThemedText } from '@/components/themed-text';
+import { DevicesScreen } from '@/components/devices-screen';
 import { UpgradeScreen } from '@/components/upgrade';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -24,6 +25,15 @@ export default function MoreToolScreen() {
       <>
         <Stack.Screen options={{ title: 'Plans' }} />
         <UpgradeScreen entitlements={data?.entitlements ?? null} />
+      </>
+    );
+  }
+
+  if (tool === 'devices') {
+    return (
+      <>
+        <Stack.Screen options={{ title: 'Devices' }} />
+        <DevicesScreen data={data} />
       </>
     );
   }

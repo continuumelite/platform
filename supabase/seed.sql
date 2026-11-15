@@ -181,3 +181,18 @@ insert into public.message_threads (id, athlete_profile_id) values
 insert into public.messages (id, thread_id, sender_id, body) values
   ('91000000-0000-0000-0000-000000000001', '90000000-0000-0000-0000-000000000001',
    '00000000-0000-0000-0000-000000000002', 'Welcome aboard! Your first block starts this week. Shout if anything feels off.');
+
+-- Devices: Casey has Strava connected (placeholder tokens) with a few recent runs.
+insert into public.device_connections (id, athlete_profile_id, provider, external_athlete_id, scopes, last_synced_at) values
+  ('a0000000-0000-0000-0000-000000000001', '20000000-0000-0000-0000-000000000005', 'strava', '12345678',
+   'read,activity:read_all', now() - interval '1 hour');
+insert into private.device_tokens (connection_id, access_token, refresh_token, expires_at) values
+  ('a0000000-0000-0000-0000-000000000001', 'seed-access-token', 'seed-refresh-token', now() - interval '1 day');
+insert into public.activities (athlete_profile_id, provider, external_id, sport_type, name, started_at,
+  duration_seconds, moving_seconds, distance_meters, elevation_gain_meters, average_heart_rate, max_heart_rate, calories) values
+  ('20000000-0000-0000-0000-000000000005', 'strava', 'seed-1', 'Run', 'Morning 10k', now() - interval '5 hours',
+   2950, 2930, 10020, 64, 162, 181, 690),
+  ('20000000-0000-0000-0000-000000000005', 'strava', 'seed-2', 'Run', 'Easy recovery', now() - interval '2 days',
+   2400, 2380, 6800, 22, 138, 151, 420),
+  ('20000000-0000-0000-0000-000000000005', 'strava', 'seed-3', 'Ride', 'Zone 2 spin', now() - interval '4 days',
+   3600, 3550, 28400, 180, 128, 146, 610);

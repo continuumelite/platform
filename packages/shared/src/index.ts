@@ -11,3 +11,4 @@ export * from './community';
 export * from './nutrition';
 export * from './messaging';
 export * from './athlete-program';
+export * from './activities';

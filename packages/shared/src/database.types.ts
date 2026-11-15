@@ -23,7 +23,27 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "athlete_profiles": {
+            "activities": {
+                  Row: {
+                    "athlete_profile_id": string,"average_heart_rate": number | null,"calories": number | null,"created_at": string,"distance_meters": number | null,"duration_seconds": number | null,"elevation_gain_meters": number | null,"external_id": string,"id": string,"max_heart_rate": number | null,"moving_seconds": number | null,"name": string,"provider": Database["public"]['Enums']["device_provider"],"sport_type": string,"started_at": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"average_heart_rate"?: number | null,"calories"?: number | null,"created_at"?: string,"distance_meters"?: number | null,"duration_seconds"?: number | null,"elevation_gain_meters"?: number | null,"external_id": string,"id"?: string,"max_heart_rate"?: number | null,"moving_seconds"?: number | null,"name"?: string,"provider": Database["public"]['Enums']["device_provider"],"sport_type"?: string,"started_at": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"average_heart_rate"?: number | null,"calories"?: number | null,"created_at"?: string,"distance_meters"?: number | null,"duration_seconds"?: number | null,"elevation_gain_meters"?: number | null,"external_id"?: string,"id"?: string,"max_heart_rate"?: number | null,"moving_seconds"?: number | null,"name"?: string,"provider"?: Database["public"]['Enums']["device_provider"],"sport_type"?: string,"started_at"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "activities_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: false
+      referencedRelation: "athlete_profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"athlete_profiles": {
                   Row: {
                     "availability": NonNullable<Json>,"created_at": string,"date_of_birth": string | null,"equipment": string | null,"goals": string | null,"id": string,"injuries": string | null,"organization_id": string,"preferences": NonNullable<Json>,"training_history": string | null,"updated_at": string,"user_id": string
                   }
@@ -214,6 +234,26 @@ isOneToOne: false
       columns: ["reporter_id"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"device_connections": {
+                  Row: {
+                    "athlete_profile_id": string,"connected_at": string,"external_athlete_id": string | null,"id": string,"last_error": string | null,"last_synced_at": string | null,"provider": Database["public"]['Enums']["device_provider"],"scopes": string | null,"status": Database["public"]['Enums']["device_status"]
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "athlete_profile_id": string,"connected_at"?: string,"external_athlete_id"?: string | null,"id"?: string,"last_error"?: string | null,"last_synced_at"?: string | null,"provider": Database["public"]['Enums']["device_provider"],"scopes"?: string | null,"status"?: Database["public"]['Enums']["device_status"]
+                  }
+                  Update: {
+                    "athlete_profile_id"?: string,"connected_at"?: string,"external_athlete_id"?: string | null,"id"?: string,"last_error"?: string | null,"last_synced_at"?: string | null,"provider"?: Database["public"]['Enums']["device_provider"],"scopes"?: string | null,"status"?: Database["public"]['Enums']["device_status"]
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "device_connections_athlete_profile_id_fkey"
+      columns: ["athlete_profile_id"]
+isOneToOne: false
+      referencedRelation: "athlete_profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -781,6 +821,11 @@ isOneToOne: false
 "create_organization":
 { Args: { "org_name": string }; Returns: string
                            },
+"device_tokens_for":
+{ Args: { "target_connection_id": string }; Returns: {
+              "access_token": string,"expires_at": string,"refresh_token": string
+            }[]
+                           },
 "get_invitation":
 { Args: { "invite_token": string }; Returns: {
               "email": string,"invited_by_name": string,"is_accepted": boolean,"is_expired": boolean,"organization_name": string,"role": Database["public"]['Enums']["org_role"]
@@ -797,6 +842,9 @@ isOneToOne: false
               "athlete_profile_id": string,"last_message_at": string,"thread_id": string,"unread": number
             }[]
                            },
+"save_device_connection":
+{ Args: { "access": string,"device": Database["public"]['Enums']["device_provider"],"expires": string,"external_athlete": string,"granted_scopes": string,"refresh": string }; Returns: string
+                           },
 "save_plan_settings":
 { Args: { "document": Json,"org_id": string }; Returns: undefined
                            },
@@ -805,10 +853,13 @@ isOneToOne: false
                            },
 "save_workout":
 { Args: { "document": Json }; Returns: string
+                           },
+"store_device_tokens":
+{ Args: { "access": string,"expires": string,"refresh": string,"target_connection_id": string }; Returns: undefined
                            }
           }
           Enums: {
-            "coach_assignment_role": "primary"|"nutrition"|"assistant","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","nutrition_day_type": "any"|"training"|"rest","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived","subscription_source": "manual"|"stripe"|"app_store"|"play_store","subscription_status": "active"|"trialing"|"past_due"|"canceled"
+            "coach_assignment_role": "primary"|"nutrition"|"assistant","device_provider": "strava"|"garmin"|"apple_health"|"health_connect","device_status": "active"|"revoked"|"error","exercise_tracking": "weight_reps"|"reps"|"time"|"distance","load_type": "none"|"kg"|"lb"|"percent_1rm","load_unit": "kg"|"lb","meal_slot": "breakfast"|"lunch"|"dinner"|"snack","nutrition_day_type": "any"|"training"|"rest","org_role": "owner"|"head_coach"|"coach"|"athlete","program_status": "draft"|"active"|"completed"|"archived","subscription_source": "manual"|"stripe"|"app_store"|"play_store","subscription_status": "active"|"trialing"|"past_due"|"canceled"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -928,7 +979,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "coach_assignment_role": ["primary", "nutrition", "assistant"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"nutrition_day_type": ["any", "training", "rest"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"],"subscription_source": ["manual", "stripe", "app_store", "play_store"],"subscription_status": ["active", "trialing", "past_due", "canceled"]
+            "coach_assignment_role": ["primary", "nutrition", "assistant"],"device_provider": ["strava", "garmin", "apple_health", "health_connect"],"device_status": ["active", "revoked", "error"],"exercise_tracking": ["weight_reps", "reps", "time", "distance"],"load_type": ["none", "kg", "lb", "percent_1rm"],"load_unit": ["kg", "lb"],"meal_slot": ["breakfast", "lunch", "dinner", "snack"],"nutrition_day_type": ["any", "training", "rest"],"org_role": ["owner", "head_coach", "coach", "athlete"],"program_status": ["draft", "active", "completed", "archived"],"subscription_source": ["manual", "stripe", "app_store", "play_store"],"subscription_status": ["active", "trialing", "past_due", "canceled"]
           }
         }
 } as const

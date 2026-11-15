@@ -403,4 +403,5 @@ ai_eval_cases         – sample athletes + "correct" programs used to test AI c
 - **Platforms:** athletes can use the mobile app or the web, with the same features on both.
 - **Community:** one feed across the whole organization; athletes and coaches post, coach posts are highlighted.
 - **Subscriptions:** three athlete tiers that unlock more features; the feature-to-tier mapping is configurable and still to be decided. Built: the owner edits the mapping at Dashboard › Plans on the web; coaches set an athlete's level on the athlete page; the apps show locked features and a Plans page. Levels stay off until the owner turns them on.
+- **Built overnight (Nov 15):** community feed, nutrition targets and food logging, coach–athlete messaging (with the per-week message limit), the athlete side of the web app, and the Strava connection (switched off until the Strava app keys are set; see `docs/integrations/strava.md`).
 - **Look and feel:** the design brief (dark navy, cream, Anton + DM Sans, five mobile tabs) is the reference; see `docs/brand/README.md`.

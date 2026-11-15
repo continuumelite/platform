@@ -20,6 +20,7 @@ export const ATHLETE_LINKS: NavLink[] = [
   { href: '/dashboard/nutrition', label: 'Nutrition' },
   { href: '/dashboard/messages', label: 'Coach' },
   { href: '/dashboard/community', label: 'Community' },
+  { href: '/dashboard/devices', label: 'Devices' },
 ];
 
 export function NavLinks({ links }: { links: NavLink[] }) {

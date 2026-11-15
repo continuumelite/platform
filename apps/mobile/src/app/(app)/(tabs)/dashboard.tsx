@@ -3,10 +3,12 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { ActivityRow } from '@/components/activity-row';
 import { Card, Rule, TabScreen } from '@/components/layout';
 import { ThemedText } from '@/components/themed-text';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import type { Activity } from '@/lib/devices';
 import { supabase } from '@/lib/supabase';
 
 type Stats = {
@@ -14,6 +16,7 @@ type Stats = {
   last7Days: number;
   weeklyVolumeKg: number;
   bests: { name: string; e1rm: number; unit: string }[];
+  activities: Activity[];
 };
 
 const LB_TO_KG = 0.4536;
@@ -26,6 +29,14 @@ async function fetchStats(): Promise<Stats> {
     .order('performed_on', { ascending: false })
     .limit(200);
   if (error) throw error;
+  // Row-level security limits activities to the athlete's own.
+  const { data: activityRows } = await supabase
+    .from('activities')
+    .select(
+      'id, name, sport_type, started_at, duration_seconds, moving_seconds, distance_meters, average_heart_rate',
+    )
+    .order('started_at', { ascending: false })
+    .limit(5);
 
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 6);
@@ -59,6 +70,16 @@ async function fetchStats(): Promise<Stats> {
       .map(([name, b]) => ({ name, ...b }))
       .sort((a, b) => a.name.localeCompare(b.name))
       .slice(0, 8),
+    activities: (activityRows ?? []).map((a) => ({
+      id: a.id,
+      name: a.name,
+      sportType: a.sport_type,
+      startedAt: a.started_at,
+      durationSeconds: a.duration_seconds,
+      movingSeconds: a.moving_seconds,
+      distanceMeters: a.distance_meters == null ? null : Number(a.distance_meters),
+      averageHeartRate: a.average_heart_rate,
+    })),
   };
 }
 
@@ -143,6 +164,17 @@ export default function DashboardScreen() {
             )}
           </Card>
         </>
+      )}
+
+      {stats && stats.activities.length > 0 && (
+        <Card title="From your devices">
+          {stats.activities.map((a, i) => (
+            <View key={a.id}>
+              {i > 0 && <Rule />}
+              <ActivityRow activity={a} />
+            </View>
+          ))}
+        </Card>
       )}
 
       <Card title="Fitness · Fatigue · Form" source="Connect a device">

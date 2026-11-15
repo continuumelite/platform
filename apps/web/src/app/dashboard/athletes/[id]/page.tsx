@@ -17,6 +17,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Card, secondaryButtonClass } from '@/components/ui';
 import { StatusBadge } from '../../programs/status-badge';
 import { PlanPicker } from './plan-picker';
+import { ActivityList } from '@/components/activity-list';
 import { NutritionTargetForm } from './nutrition-form';
 
 export default function AthletePage({ params }: PageProps<'/dashboard/athletes/[id]'>) {
@@ -78,6 +79,7 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
     { data: plans },
     { data: targetRows },
     { data: foodRows },
+    { data: activities },
   ] = await Promise.all([
     supabase
       .from('athlete_profiles')
@@ -111,6 +113,14 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
       .eq('athlete_profile_id', id)
       .gte('logged_on', sixDaysAgo())
       .order('logged_on', { ascending: false }),
+    supabase
+      .from('activities')
+      .select(
+        'id, name, sport_type, started_at, duration_seconds, moving_seconds, distance_meters, average_heart_rate, provider',
+      )
+      .eq('athlete_profile_id', id)
+      .order('started_at', { ascending: false })
+      .limit(10),
   ]);
 
   // Row-level security hides athletes this coach doesn't work with.
@@ -182,6 +192,11 @@ async function Athlete({ params }: { params: Promise<{ id: string }> }) {
         }))}
         days={foodRows ?? []}
       />
+
+      <Card>
+        <h2 className="mb-2 text-base font-semibold">Activities from devices</h2>
+        <ActivityList activities={activities ?? []} />
+      </Card>
 
       <Card className="p-0">
         <h2 className="px-6 pt-5 pb-2 text-base font-semibold">Programs</h2>
