@@ -19,12 +19,12 @@ These come straight from how the trainer works and should drive every design dec
 
 ## 2. Who uses it
 
-| Role                       | Main surface                            | Core jobs                                                                                                                                              |
-| -------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Head coach / org owner** | Web dashboard                           | Everything a coach can do, plus manage coaches, assign athletes, own the organization's shared methodology and AI knowledge                            |
-| **Coach** (trainer)        | Web dashboard, mobile secondary         | Build and adjust programs per athlete, set nutrition targets, review logs and wearable trends, message athletes, leave notes, teach and correct the AI |
-| **Athlete**                | Mobile app (iOS/Android), web secondary | See today's plan, log workouts/sets, log food, connect watch, complete check-ins, message coach                                                        |
-| **Admin** (you / dev team) | Web + database tools                    | Manage accounts, support, billing                                                                                                                      |
+| Role                       | Main surface                             | Core jobs                                                                                                                                              |
+| -------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Head coach / org owner** | Web dashboard                            | Everything a coach can do, plus manage coaches, assign athletes, own the organization's shared methodology and AI knowledge                            |
+| **Coach** (trainer)        | Web dashboard, mobile secondary          | Build and adjust programs per athlete, set nutrition targets, review logs and wearable trends, message athletes, leave notes, teach and correct the AI |
+| **Athlete**                | Mobile app (iOS/Android) or web, equally | See today's plan, log workouts/sets, log food, connect watch, complete check-ins, message coach                                                        |
+| **Admin** (you / dev team) | Web + database tools                     | Manage accounts, support, billing                                                                                                                      |
 
 ### Multiple trainers (confirmed requirement)
 
@@ -65,13 +65,15 @@ Goal: the trainer's existing athletes use it daily instead of spreadsheets/texts
 - **Workout logging (mobile)**: today's session, log actual sets, notes, works offline.
 - **Basic nutrition**: daily macro/calorie targets per athlete, quick-add logging, photo logging.
 - **Apple Health (HealthKit) + Android Health Connect**: steps, sleep, resting HR, HRV, workouts.
+- **Strava**: OAuth connection on web or mobile; imports runs, rides and other activities (server-side, so it works for web-only athletes too).
+- **Athlete web**: everything an athlete does on mobile (today, training, logging, nutrition, dashboard) also works in the browser.
 - Coach ↔ athlete messaging and push notifications.
 - Coach dashboard: per-athlete compliance, recent sessions, flags.
 - Distribution: TestFlight (iOS) and Play internal testing (Android). No public listing yet.
 
 ### Phase 2: Depth (8–10 weeks)
 
-- **Garmin** (and Whoop, Oura, Polar, Coros, Strava). See section 6.
+- **Garmin** (and Whoop, Oura, Polar, Coros). See section 6.
 - Food database search + barcode scanning, saved meals, meal plans from coach.
 - Custom weekly check-ins (coach-defined questions, photos, body measurements).
 - Progress analytics: strength trends, estimated 1RM, volume, readiness vs. performance.
@@ -88,10 +90,30 @@ Goal: the trainer's existing athletes use it daily instead of spreadsheets/texts
 
 ### Phase 4: Business features (as the business plan needs)
 
-- Subscriptions & payments (see section 8, App Store rules matter here).
+- Subscriptions & payments: three athlete tiers, each unlocking more features (see "Subscription tiers" below and section 8; App Store rules matter here).
 - Head-coach tools: coach performance, athlete load per coach, organization reporting.
 - Video form-check uploads with coach annotations.
 - Other businesses licensing the platform, if the business plan goes there.
+
+### Subscription tiers & feature access
+
+Athletes will subscribe at one of **three levels**, each unlocking more features. Which feature goes in which tier isn't decided yet, so the app is built so the mapping is **data, not code**: the owner changes it on the web without a new release.
+
+- **Feature keys.** Every gateable feature gets a stable key in `packages/shared` (e.g. `community.post`, `nutrition.logging`, `nutrition.meal_plans`, `devices.strava`, `devices.garmin`, `checkins`, `messaging`, `analytics.advanced`, `ai.summaries`). New features add a key when they're built.
+- **Plans and mapping.** The organization has three plans (names and prices TBD) and a plan ↔ feature table. An owner-only screen on the web shows a grid of features × tiers with a checkbox in each cell.
+- **Subscriptions.** Each athlete has one current plan. Before payments exist, a coach sets it by hand (useful for comps, pilots and existing clients). Later, Stripe (web) and RevenueCat (App Store / Play) update the same record.
+- **One check, enforced on the server.** A database function (`has_feature(athlete, key)`) answers "can this athlete use this?", and row-level security uses it. Hiding a button is never the only gate. The apps use the same answer to show a locked state with an "Upgrade" link (the brief's More › Upgrade).
+- **Coaches and owners** always have every feature.
+- **Until the mapping is decided,** every plan includes every feature, so nothing changes for the pilot. Turning on tiers is then a settings change, not a rebuild.
+- **Limits, not just on/off.** A mapping can carry a number where it helps (e.g. "messages per week", "coach check-ins per month"), so a tier can offer more of something rather than only unlock it.
+
+### Community
+
+One community across the **whole organization**: every Continuum athlete and coach, not one group per coach. It sits under the personal cards on Home (as in the brief) and in More › Community.
+
+- Athletes and coaches can post. **Coach posts are highlighted** (coach badge and accent styling) and can be pinned to the top.
+- Posting, commenting and even seeing the feed are feature keys, so they can be tied to tiers like anything else.
+- Needs basic moderation from day one: coaches can hide posts and remove members, and athletes can report a post.
 
 > **Phases 1–2 prepare for AI.** The AI is only as good as the data it learns from. From the first release, we store programs in a structured way (not free text), keep a full version history of every program change, and let coaches add a short _reason_ when they adjust a plan (e.g. "cut volume 20%: poor sleep, knee irritation"). By Phase 3 this is a rich record of how each trainer actually coaches.
 
@@ -174,12 +196,13 @@ Athlete profile and goals, injuries, training history and logged sets, wearable 
 
 This is the hardest technical area. Plan for it explicitly.
 
-| Source                            | How                                                                                 | Notes                                                                                                                   |
-| --------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **Apple Watch / Apple Health**    | HealthKit, **on device** (no server API)                                            | Needs native module (`react-native-health` or similar) in an Expo dev build. App reads data and uploads to our backend. |
-| **Android / Wear OS / Samsung**   | **Health Connect**, on device                                                       | Same pattern as HealthKit.                                                                                              |
-| **Garmin**                        | Garmin Connect Developer Program (Health API + Activity API), server-to-server push | Requires application & approval as a business. Data pushed to our webhook. **Apply in Phase 0.**                        |
-| Whoop, Oura, Polar, Coros, Strava | Each has its own OAuth API                                                          | Each one is a separate integration to build and maintain.                                                               |
+| Source                          | How                                                                                 | Notes                                                                                                                   |
+| ------------------------------- | ----------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Apple Watch / Apple Health**  | HealthKit, **on device** (no server API)                                            | Needs native module (`react-native-health` or similar) in an Expo dev build. App reads data and uploads to our backend. |
+| **Android / Wear OS / Samsung** | **Health Connect**, on device                                                       | Same pattern as HealthKit.                                                                                              |
+| **Garmin**                      | Garmin Connect Developer Program (Health API + Activity API), server-to-server push | Requires application & approval as a business. Data pushed to our webhook. **Apply in Phase 0.**                        |
+| **Strava** (Phase 1)            | Strava API, OAuth + webhook for new activities                                      | Server-side, so it works from web or mobile. Activities only (no sleep/HRV).                                            |
+| Whoop, Oura, Polar, Coros       | Each has its own OAuth API                                                          | Each one is a separate integration to build and maintain.                                                               |
 
 **Build vs. buy:** a wearable aggregator (e.g. **Terra**, **Junction (formerly Vital)**, **ROOK**) gives one API for Garmin, Whoop, Oura, Polar, Coros, Fitbit, etc. **Recommendation:** do HealthKit + Health Connect directly in Phase 1 (they're free and on-device), then in Phase 2 compare aggregator pricing against building Garmin directly. If athletes use 3+ device brands, the aggregator usually wins on time-to-market. Check current pricing; it's typically a monthly fee plus per-user.
 
@@ -310,6 +333,15 @@ messages / threads    – coach ↔ athlete chat
 coach_notes           – private notes on an athlete
 audit_log             – who changed what, across the platform
 
+-- Tiers and community
+plans                 – the org's subscription levels (3), name, price, order
+plan_features         – which feature keys each plan includes, with an optional limit
+subscriptions         – an athlete's current plan, status, period, source (manual, Stripe, App Store, Play)
+community_posts       – org-wide posts; author, body, media, pinned, hidden
+community_comments    – replies to posts
+community_reactions   – likes / reactions
+community_reports     – athlete reports for moderation
+
 -- AI (tables created in Phase 3; program_versions above collects the data from Phase 1)
 ai_profiles           – one per coach (their AI); optionally copied from another coach's profile
 ai_guardrails         – org-wide safety rules that apply to every coach's AI
@@ -362,3 +394,13 @@ ai_eval_cases         – sample athletes + "correct" programs used to test AI c
 8. Are any athletes minors? (Affects consent and privacy requirements.)
 9. Which safety rules should apply to every trainer's AI, whatever their style? _(Owner: you, working with the trainers. Needed before Phase 3; a first draft by the Phase 2 AI prototype helps.)_
 10. What should the AI do first: draft full programs, adjust existing ones week to week, or write athlete summaries?
+11. What are the three subscription levels called, what do they cost, and which features does each include? (The app is built so this can be decided late; see "Subscription tiers" in section 3.)
+12. Community extras: should finished workouts post to the feed automatically, and do we want challenges or leaderboards?
+
+### Decided (Nov 2026, from the app design brief review)
+
+- **Integrations:** keep Apple Health, Health Connect and Garmin as planned, and add **Strava** in Phase 1.
+- **Platforms:** athletes can use the mobile app or the web, with the same features on both.
+- **Community:** one feed across the whole organization; athletes and coaches post, coach posts are highlighted.
+- **Subscriptions:** three athlete tiers that unlock more features; the feature-to-tier mapping is configurable and still to be decided. Built: the owner edits the mapping at Dashboard › Plans on the web; coaches set an athlete's level on the athlete page; the apps show locked features and a Plans page. Levels stay off until the owner turns them on.
+- **Look and feel:** the design brief (dark navy, cream, Anton + DM Sans, five mobile tabs) is the reference; see `docs/brand/README.md`.
