@@ -7,6 +7,9 @@
     "icon": "./assets/images/icon.png",
     "scheme": "continuumelite",
     "userInterfaceStyle": "dark",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
     "ios": {
       "icon": "./assets/images/icon.png",
       "bundleIdentifier": "com.continuumelite.app"
