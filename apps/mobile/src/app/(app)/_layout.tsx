@@ -19,6 +19,8 @@ export default function AppLayout() {
     >
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="more/[tool]" options={{ headerShown: true }} />
+      <Stack.Screen name="community/index" options={{ headerShown: true }} />
+      <Stack.Screen name="community/[postId]" options={{ headerShown: true }} />
     </Stack>
   );
 }

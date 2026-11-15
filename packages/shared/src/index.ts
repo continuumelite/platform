@@ -7,3 +7,4 @@ export * from './schedule';
 export * from './brand';
 export * from './workouts';
 export * from './features';
+export * from './community';

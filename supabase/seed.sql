@@ -148,3 +148,20 @@ begin
   perform set_config('request.jwt.claims', '', true);
 end;
 $$;
+
+-- Community: a pinned coach post and an athlete post with a comment and a like.
+insert into public.community_posts (id, organization_id, author_id, body, pinned, created_at) values
+  ('70000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001',
+   '00000000-0000-0000-0000-000000000002',
+   'Welcome to the Continuum community. Share your wins, ask questions, and cheer each other on. Group run Saturday 8am at the usual spot.',
+   true, now() - interval '2 days'),
+  ('70000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000001',
+   '00000000-0000-0000-0000-000000000005',
+   'First 10k under 50 minutes this morning! Legs are toast.', false, now() - interval '5 hours');
+
+insert into public.community_comments (post_id, author_id, body, created_at) values
+  ('70000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003',
+   'Huge. That tempo work is paying off.', now() - interval '4 hours');
+
+insert into public.community_reactions (post_id, user_id) values
+  ('70000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000004');

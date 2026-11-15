@@ -55,7 +55,11 @@ export default function MoreScreen() {
             {i > 0 && <Rule />}
             <Pressable
               accessibilityRole="button"
-              onPress={() => router.push({ pathname: '/more/[tool]', params: { tool: tool.slug } })}
+              onPress={() =>
+                tool.slug === 'community'
+                  ? router.push('/community')
+                  : router.push({ pathname: '/more/[tool]', params: { tool: tool.slug } })
+              }
               style={({ pressed }) => [styles.row, pressed && { opacity: 0.6 }]}
             >
               <Ionicons name={tool.icon} size={20} color={theme.cream} />

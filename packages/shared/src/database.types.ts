@@ -101,6 +101,122 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"community_comments": {
+                  Row: {
+                    "author_id": string,"author_role": Database["public"]['Enums']["org_role"],"body": string,"created_at": string,"hidden_at": string | null,"id": string,"post_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author_id": string,"author_role"?: Database["public"]['Enums']["org_role"],"body": string,"created_at"?: string,"hidden_at"?: string | null,"id"?: string,"post_id": string
+                  }
+                  Update: {
+                    "author_id"?: string,"author_role"?: Database["public"]['Enums']["org_role"],"body"?: string,"created_at"?: string,"hidden_at"?: string | null,"id"?: string,"post_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "community_comments_author_id_fkey"
+      columns: ["author_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_comments_post_id_fkey"
+      columns: ["post_id"]
+isOneToOne: false
+      referencedRelation: "community_posts"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"community_posts": {
+                  Row: {
+                    "author_id": string,"author_role": Database["public"]['Enums']["org_role"],"body": string,"created_at": string,"hidden_at": string | null,"hidden_by": string | null,"id": string,"organization_id": string,"pinned": boolean,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "author_id": string,"author_role"?: Database["public"]['Enums']["org_role"],"body": string,"created_at"?: string,"hidden_at"?: string | null,"hidden_by"?: string | null,"id"?: string,"organization_id": string,"pinned"?: boolean,"updated_at"?: string
+                  }
+                  Update: {
+                    "author_id"?: string,"author_role"?: Database["public"]['Enums']["org_role"],"body"?: string,"created_at"?: string,"hidden_at"?: string | null,"hidden_by"?: string | null,"id"?: string,"organization_id"?: string,"pinned"?: boolean,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "community_posts_author_id_fkey"
+      columns: ["author_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_posts_hidden_by_fkey"
+      columns: ["hidden_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_posts_organization_id_fkey"
+      columns: ["organization_id"]
+isOneToOne: false
+      referencedRelation: "organizations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"community_reactions": {
+                  Row: {
+                    "created_at": string,"kind": string,"post_id": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"kind"?: string,"post_id": string,"user_id": string
+                  }
+                  Update: {
+                    "created_at"?: string,"kind"?: string,"post_id"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "community_reactions_post_id_fkey"
+      columns: ["post_id"]
+isOneToOne: false
+      referencedRelation: "community_posts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_reactions_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"community_reports": {
+                  Row: {
+                    "comment_id": string | null,"created_at": string,"id": string,"post_id": string,"reason": string | null,"reporter_id": string,"resolved_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "comment_id"?: string | null,"created_at"?: string,"id"?: string,"post_id": string,"reason"?: string | null,"reporter_id": string,"resolved_at"?: string | null
+                  }
+                  Update: {
+                    "comment_id"?: string | null,"created_at"?: string,"id"?: string,"post_id"?: string,"reason"?: string | null,"reporter_id"?: string,"resolved_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "community_reports_comment_id_fkey"
+      columns: ["comment_id"]
+isOneToOne: false
+      referencedRelation: "community_comments"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_reports_post_id_fkey"
+      columns: ["post_id"]
+isOneToOne: false
+      referencedRelation: "community_posts"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "community_reports_reporter_id_fkey"
+      columns: ["reporter_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"exercises": {
                   Row: {
                     "created_at": string,"created_by": string | null,"equipment": (string)[],"id": string,"instructions": string | null,"is_archived": boolean,"is_shared": boolean,"muscle_groups": (string)[],"name": string,"organization_id": string,"owner_coach_id": string | null,"tracking": Database["public"]['Enums']["exercise_tracking"],"updated_at": string,"video_url": string | null

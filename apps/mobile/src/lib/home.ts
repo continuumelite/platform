@@ -13,6 +13,7 @@ export type HomeData = {
   fullName: string | null;
   email: string | null;
   role: OrgRole | null;
+  organizationId: string | null;
   organizationName: string | null;
   coachName: string | null;
   goals: string | null;
@@ -32,7 +33,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     supabase.from('profiles').select('full_name').eq('id', userId).maybeSingle(),
     supabase
       .from('memberships')
-      .select('role, organizations(name)')
+      .select('role, organization_id, organizations(name)')
       .eq('user_id', userId)
       .limit(1)
       .maybeSingle(),
@@ -60,6 +61,7 @@ async function fetchHome(userId: string, email: string | null): Promise<HomeData
     fullName: profile.data?.full_name ?? null,
     email,
     role: membership.data?.role ?? null,
+    organizationId: membership.data?.organization_id ?? null,
     organizationName: membership.data?.organizations?.name ?? null,
     coachName: athlete.data?.coaches.find((c) => c.role === 'primary')?.coach?.full_name ?? null,
     goals: athlete.data?.goals ?? null,

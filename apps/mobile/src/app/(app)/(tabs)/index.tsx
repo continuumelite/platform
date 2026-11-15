@@ -2,6 +2,7 @@ import { DAYS_OF_WEEK, isCoachingRole, localDateString, locateInProgram } from '
 import { router } from 'expo-router';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
+import { CommunityPreview } from '@/components/community/preview';
 import { Card, TabScreen } from '@/components/layout';
 import { StartButton } from '@/components/start-button';
 import { ThemedText } from '@/components/themed-text';
@@ -9,6 +10,7 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { canUse } from '@/lib/entitlements';
 import { useHomeData, type HomeData } from '@/lib/home';
+import { useSession } from '@/lib/session';
 
 /**
  * Home: personal status first (brief, slide 3) — today's session, where you are in the
@@ -16,6 +18,7 @@ import { useHomeData, type HomeData } from '@/lib/home';
  */
 export default function HomeScreen() {
   const { data, error, refreshing, refresh } = useHomeData();
+  const { session } = useSession();
   const today = new Date().toLocaleDateString(undefined, {
     weekday: 'long',
     month: 'long',
@@ -48,6 +51,9 @@ export default function HomeScreen() {
         ) : (
           <AthleteHome data={data} />
         ))}
+      {data && session && canUse(data.entitlements, 'community.view') && (
+        <CommunityPreview userId={session.user.id} />
+      )}
     </TabScreen>
   );
 }
