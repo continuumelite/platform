@@ -4,7 +4,7 @@ import { getCurrentUser } from '@/lib/auth';
 import Link from 'next/link';
 import { Wordmark } from '@/components/brand';
 import { signOut } from '../actions';
-import { NavLinks } from './nav-links';
+import { ATHLETE_LINKS, COACH_LINKS, NavLinks } from './nav-links';
 
 export default function DashboardLayout({ children }: LayoutProps<'/dashboard'>) {
   return (
@@ -36,7 +36,7 @@ async function HeaderContent() {
         <Link href="/dashboard" aria-label="Continuum Elite home">
           <Wordmark size="sm" />
         </Link>
-        {isCoach && <NavLinks />}
+        {membership && <NavLinks links={isCoach ? COACH_LINKS : ATHLETE_LINKS} />}
       </div>
       <div className="flex items-center gap-3">
         <span className="hidden text-sm text-zinc-400 sm:inline">

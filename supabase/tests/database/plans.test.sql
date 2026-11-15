@@ -2,7 +2,7 @@
 -- Runs against the seed data: `pnpm db:test` (or `supabase test db`).
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(19);
+select plan(20);
 
 create function pg_temp.act_as(user_id uuid) returns void language sql as $$
   select set_config('role', 'authenticated', true),
@@ -143,6 +143,20 @@ where athlete_profile_id = current_setting('test.jordan')::uuid;
 select ok(
   not private.has_feature(current_setting('test.jordan')::uuid, 'community.post'),
   'a canceled subscription falls back to the default plan'
+);
+
+-- Logging workouts follows the level too (Jordan's default level only has training.logging
+-- removed below).
+select pg_temp.as_postgres();
+delete from public.plan_features
+where plan_id = current_setting('test.level1')::uuid and feature_key = 'training.logging';
+select pg_temp.act_as('00000000-0000-0000-0000-000000000004');
+select throws_ok(
+  $$insert into public.workout_logs (id, athlete_profile_id, session_name, performed_on)
+    values (gen_random_uuid(), current_setting('test.jordan')::uuid, 'Extra', current_date)$$,
+  '42501',
+  null,
+  'without logging in their level, an athlete cannot log a workout'
 );
 
 -- Integrity.

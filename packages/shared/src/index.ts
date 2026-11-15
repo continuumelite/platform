@@ -10,3 +10,4 @@ export * from './features';
 export * from './community';
 export * from './nutrition';
 export * from './messaging';
+export * from './athlete-program';

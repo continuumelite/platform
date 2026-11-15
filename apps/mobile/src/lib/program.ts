@@ -1,28 +1,17 @@
 import {
+  ATHLETE_PROGRAM_SELECT,
   localDateString,
   pickCurrentProgram,
-  type LoadType,
-  type ProgramDocument,
-  type Tracking,
+  toAthleteProgram,
+  type AthleteProgram,
+  type AthleteProgramRow,
+  type ExerciseInfo,
 } from '@continuum/shared';
 
 import { supabase } from './supabase';
 
-export type ExerciseInfo = {
-  name: string;
-  instructions: string | null;
-  videoUrl: string | null;
-  tracking: Tracking;
-};
-
-export type CurrentProgram = {
-  id: string;
-  athleteProfileId: string;
-  name: string;
-  startDate: string | null;
-  document: ProgramDocument;
-  exercises: Map<string, ExerciseInfo>;
-};
+export type { ExerciseInfo };
+export type CurrentProgram = AthleteProgram;
 
 // The last program loaded, so the workout screen can open instantly from Today.
 let lastLoaded: CurrentProgram | null = null;
@@ -30,25 +19,14 @@ export function cachedProgram() {
   return lastLoaded;
 }
 
-const byPosition = <T extends { position: number }>(a: T, b: T) => a.position - b.position;
-
 /**
- * The signed-in athlete's current program, read from the program tables (athletes can't read
- * the coach's version history). Row-level security only returns programs that are no longer drafts.
+ * The signed-in athlete's current program. Row-level security only returns programs that are no
+ * longer drafts.
  */
 export async function fetchCurrentProgram(userId: string): Promise<CurrentProgram | null> {
   const { data, error } = await supabase
     .from('programs')
-    .select(
-      `id, name, description, start_date, status,
-       athlete:athlete_profiles!inner(id, user_id),
-       blocks:program_blocks(id, position, name, notes,
-         weeks:program_weeks(id, position, is_deload, notes,
-           sessions:program_sessions(id, position, name, day_of_week, notes,
-             exercises:session_exercises(id, position, exercise_id, sets, reps, load_type, load_value,
-               rpe, tempo, rest_seconds, superset, notes,
-               exercise:exercises(name, instructions, video_url, tracking)))))`,
-    )
+    .select(ATHLETE_PROGRAM_SELECT)
     .eq('athlete.user_id', userId)
     .eq('status', 'active');
 
@@ -61,59 +39,6 @@ export async function fetchCurrentProgram(userId: string): Promise<CurrentProgra
   );
   if (!current) return null;
 
-  const exercises = new Map<string, ExerciseInfo>();
-  const document: ProgramDocument = {
-    name: current.name,
-    description: current.description,
-    blocks: [...current.blocks].sort(byPosition).map((b) => ({
-      id: b.id,
-      name: b.name,
-      notes: b.notes,
-      weeks: [...b.weeks].sort(byPosition).map((w) => ({
-        id: w.id,
-        isDeload: w.is_deload,
-        notes: w.notes,
-        sessions: [...w.sessions].sort(byPosition).map((s) => ({
-          id: s.id,
-          name: s.name,
-          dayOfWeek: s.day_of_week,
-          notes: s.notes,
-          exercises: [...s.exercises].sort(byPosition).map((e) => {
-            if (e.exercise) {
-              exercises.set(e.exercise_id, {
-                name: e.exercise.name,
-                instructions: e.exercise.instructions,
-                videoUrl: e.exercise.video_url,
-                tracking: e.exercise.tracking,
-              });
-            }
-            return {
-              id: e.id,
-              exerciseId: e.exercise_id,
-              sets: e.sets,
-              reps: e.reps,
-              loadType: e.load_type as LoadType,
-              loadValue: e.load_value,
-              rpe: e.rpe,
-              tempo: e.tempo,
-              restSeconds: e.rest_seconds,
-              superset: e.superset,
-              notes: e.notes,
-            };
-          }),
-        })),
-      })),
-    })),
-  };
-
-  const program: CurrentProgram = {
-    id: current.id,
-    athleteProfileId: current.athlete.id,
-    name: current.name,
-    startDate: current.start_date,
-    document,
-    exercises,
-  };
-  lastLoaded = program;
-  return program;
+  lastLoaded = toAthleteProgram(current as unknown as AthleteProgramRow);
+  return lastLoaded;
 }

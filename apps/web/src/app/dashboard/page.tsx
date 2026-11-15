@@ -8,6 +8,7 @@ import { Card, secondaryButtonClass } from '@/components/ui';
 import { revokeInvitation } from '../actions';
 import { InviteForm } from './invite-form';
 import { CopyLink } from './copy-link';
+import { AthleteHome } from './athlete-home';
 
 export default function DashboardPage() {
   return (
@@ -35,7 +36,7 @@ async function Dashboard() {
   return isCoachingRole(membership.role) ? (
     <CoachDashboard user={user} membership={membership} />
   ) : (
-    <AthleteHome user={user} />
+    <AthleteHome />
   );
 }
 
@@ -146,27 +147,5 @@ async function CoachDashboard({ user, membership }: { user: CurrentUser; members
         )}
       </Card>
     </>
-  );
-}
-
-async function AthleteHome({ user }: { user: CurrentUser }) {
-  const supabase = await createClient();
-  const { data: profile } = await supabase
-    .from('athlete_profiles')
-    .select('goals, coaches:coach_athletes(role, coach:profiles(full_name))')
-    .eq('user_id', user.id)
-    .maybeSingle();
-
-  const primary = profile?.coaches.find((c) => c.role === 'primary');
-
-  return (
-    <Card>
-      <h1 className="text-4xl">Hi {user.fullName?.split(' ')[0] ?? 'there'}</h1>
-      <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-        {primary?.coach?.full_name ? `Your coach is ${primary.coach.full_name}. ` : ''}
-        Your training plan and logging live in the Continuum Elite mobile app.
-      </p>
-      {profile?.goals && <p className="mt-4 text-sm">Goal: {profile.goals}</p>}
-    </Card>
   );
 }

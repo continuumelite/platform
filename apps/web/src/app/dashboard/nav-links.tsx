@@ -3,20 +3,30 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const links = [
+export type NavLink = { href: string; label: string };
+
+export const COACH_LINKS: NavLink[] = [
   { href: '/dashboard', label: 'Athletes' },
   { href: '/dashboard/programs', label: 'Programs' },
   { href: '/dashboard/exercises', label: 'Exercises' },
   { href: '/dashboard/messages', label: 'Messages' },
   { href: '/dashboard/community', label: 'Community' },
   { href: '/dashboard/plans', label: 'Plans' },
-] as const;
+];
 
-export function NavLinks() {
+export const ATHLETE_LINKS: NavLink[] = [
+  { href: '/dashboard', label: 'Home' },
+  { href: '/dashboard/training', label: 'Training' },
+  { href: '/dashboard/nutrition', label: 'Nutrition' },
+  { href: '/dashboard/messages', label: 'Coach' },
+  { href: '/dashboard/community', label: 'Community' },
+];
+
+export function NavLinks({ links }: { links: NavLink[] }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-5">
+    <nav className="flex flex-wrap gap-x-5 gap-y-1">
       {links.map(({ href, label }) => {
         const active = href === '/dashboard' ? pathname === href : pathname.startsWith(href);
         return (
