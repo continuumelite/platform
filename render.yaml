@@ -1,0 +1,49 @@
+# Render Blueprint for the worker (apps/worker).
+# Staging deploys from `main`; production deploys from the `production` branch,
+# which the release workflow updates when a version tag is pushed.
+# Secrets are marked `sync: false`: Render asks for them when the Blueprint is created.
+
+services:
+  - type: web
+    name: continuum-worker-staging
+    runtime: node
+    plan: starter
+    branch: main
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/worker/**
+        - packages/**
+        - pnpm-lock.yaml
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @continuum/worker build
+    startCommand: pnpm --filter @continuum/worker start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+
+  - type: web
+    name: continuum-worker-production
+    runtime: node
+    plan: starter
+    branch: production
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/worker/**
+        - packages/**
+        - pnpm-lock.yaml
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @continuum/worker build
+    startCommand: pnpm --filter @continuum/worker start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: '22'
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false

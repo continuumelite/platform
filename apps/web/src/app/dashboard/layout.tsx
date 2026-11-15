@@ -39,9 +39,13 @@ async function HeaderContent() {
         {membership && <NavLinks links={isCoach ? COACH_LINKS : ATHLETE_LINKS} />}
       </div>
       <div className="flex items-center gap-3">
-        <span className="hidden text-sm text-zinc-400 sm:inline">
+        <Link
+          href="/dashboard/account"
+          className="hidden text-sm text-zinc-400 hover:text-zinc-50 sm:inline"
+          title="Account"
+        >
           {user.fullName ?? user.email}
-        </span>
+        </Link>
         <form action={signOut}>
           <button
             type="submit"

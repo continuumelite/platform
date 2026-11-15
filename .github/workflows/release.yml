@@ -1,0 +1,80 @@
+# Production release: push a version tag on main, e.g.
+#   git tag v0.1.0 && git push origin v0.1.0
+#
+# Order matters: migrate the production database first, then move the `production` branch
+# to the tagged commit (Vercel and Render deploy production from that branch), then build
+# store binaries. Each job stays skipped until its repository variable is set.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  check-tag:
+    name: Check tag is on main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
+  database:
+    name: Migrate production database
+    needs: check-tag
+    if: ${{ vars.SUPABASE_PRODUCTION_PROJECT_REF != '' }}
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_PRODUCTION_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.0
+      - run: supabase link --project-ref ${{ vars.SUPABASE_PRODUCTION_PROJECT_REF }}
+      - run: supabase db push
+
+  promote:
+    name: Deploy web and worker (move production branch)
+    needs: [check-tag, database]
+    if: ${{ !failure() && !cancelled() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # Fast-forward only: fails rather than rewriting production history.
+      - run: git push origin "$GITHUB_SHA:refs/heads/production"
+
+  mobile:
+    name: Build store binaries
+    needs: [check-tag, database]
+    if: ${{ !failure() && !cancelled() && vars.EAS_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      # Builds run on Expo's servers; --no-wait so this job doesn't sit idle.
+      # Add --auto-submit once App Store Connect and Play Console are connected.
+      - name: Start production builds
+        working-directory: apps/mobile
+        run: eas build --platform all --profile production --non-interactive --no-wait

@@ -77,6 +77,13 @@ Local Supabase doesn't require email confirmation. Staging and production will.
 | `pnpm db:types`                              | Regenerate TypeScript types from the local database |
 | `pnpm exec supabase migration new <name>`    | Create a new migration file                         |
 
+## Deployments
+
+- **Merge to `main`** → staging (web, database migrations, mobile preview update).
+- **Tag `vX.Y.Z` on `main`** → production, plus App Store / Play Store builds.
+
+Account setup, secrets and the full flow are in [docs/runbooks/infrastructure-setup.md](docs/runbooks/infrastructure-setup.md). To create the first organization and owner on a new database, see [docs/runbooks/first-accounts.md](docs/runbooks/first-accounts.md).
+
 ## How we work
 
 - `main` is always deployable. Work on a short-lived branch (`feat/…`, `fix/…`) and open a pull request.
