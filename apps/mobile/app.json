@@ -6,14 +6,14 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "continuumelite",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/images/icon.png",
       "bundleIdentifier": "com.continuumelite.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#131313",
+        "backgroundColor": "#0E1725",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -30,7 +30,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#131313",
+          "backgroundColor": "#0E1725",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200
         }
@@ -40,6 +40,7 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "backgroundColor": "#0E1725"
   }
 }

@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: '#8A8988',
   },
-  valueAccent: { fontFamily: BrandFonts.serifItalic },
+  valueAccent: { fontFamily: BrandFonts.italic },
   form: { gap: Spacing.three, maxWidth: MaxContentWidth },
   error: { color: '#dc2626', fontSize: 14 },
   footer: { textAlign: 'center' },

@@ -44,7 +44,7 @@ async function Exercise({ params }: { params: Promise<{ id: string }> }) {
       <>
         {back}
         <Card>
-          <h1 className="text-2xl font-semibold">{ex.name}</h1>
+          <h1 className="text-4xl">{ex.name}</h1>
           <p className="mt-1 text-sm text-zinc-500">
             {ex.owner_coach_id
               ? `Shared by ${ex.owner?.full_name ?? 'a coach'}`
@@ -99,7 +99,7 @@ async function Exercise({ params }: { params: Promise<{ id: string }> }) {
     <>
       {back}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Edit exercise</h1>
+        <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">Edit exercise</h1>
         <form action={archiveExercise.bind(null, ex.id)}>
           <button type="submit" className={secondaryButtonClass}>
             Archive

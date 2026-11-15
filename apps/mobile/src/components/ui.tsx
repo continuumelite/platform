@@ -51,7 +51,7 @@ export function Button({
       style={({ pressed }) => [
         styles.button,
         primary
-          ? { backgroundColor: theme.text }
+          ? { backgroundColor: theme.cream }
           : { borderWidth: 1, borderColor: theme.backgroundSelected },
         (pressed || loading) && { opacity: 0.7 },
       ]}

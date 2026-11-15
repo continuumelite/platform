@@ -7,7 +7,7 @@ import { ExerciseForm } from '../exercise-form';
 export default function NewExercisePage() {
   return (
     <>
-      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">New exercise</h1>
+      <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">New exercise</h1>
       <Card>
         <Suspense fallback={<p className="text-sm text-zinc-500">Loading…</p>}>
           <NewExerciseForm />

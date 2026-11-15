@@ -12,7 +12,7 @@ export default function ExercisesPage({ searchParams }: PageProps<'/dashboard/ex
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Exercises</h1>
+          <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">Exercises</h1>
           <p className="mt-1 text-sm text-zinc-500">
             The building blocks for every program. Add your cues and a demo video once, then reuse
             them for every athlete.

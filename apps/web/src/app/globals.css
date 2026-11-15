@@ -1,57 +1,56 @@
 @import 'tailwindcss';
 
 /*
- * Continuum Elite brand.
- * From the brand deck: near-black #131313, slate #93A7B2, soft grey #B8B7B7, white.
- * Mood: 90s surf brands meet the new wave of running brands. Monochrome, quiet, thin rules.
+ * Continuum brand, from the app design brief: dark navy throughout, warm cream for the logo
+ * and primary actions, a red accent used sparingly, Anton for headlines and DM Sans for
+ * everything else.
  *
- * Tailwind's zinc scale is remapped to the brand's warm neutrals (950 is the deck's #131313),
- * so every zinc-* class in the app picks up the brand. Use `slate`/`slate-deep` for accents:
- * slate on dark backgrounds, slate-deep on light ones (it meets contrast for text).
+ * The app is dark-only, so the `dark:` variant always applies (the <html> element carries
+ * `dark`). Tailwind's zinc scale is remapped to the brief's navy neutrals, so every zinc-*
+ * class picks up the brand: 950 is the page, 900 a card, 800 a raised surface, 700 a rule.
+ * `slate` is kept as the accent token name and now resolves to cream.
  */
 
-@theme {
-  --color-zinc-50: #f8f7f4;
-  --color-zinc-100: #efeeea;
-  --color-zinc-200: #e2e1dd;
-  --color-zinc-300: #cfcecb;
-  --color-zinc-400: #b8b7b7;
-  --color-zinc-500: #8a8988;
-  --color-zinc-600: #5d5d5d;
-  --color-zinc-700: #3d3d3d;
-  --color-zinc-800: #2a2a2a;
-  --color-zinc-900: #1c1c1c;
-  --color-zinc-950: #131313;
+@custom-variant dark (&:where(.dark, .dark *));
 
-  --color-ink: #131313;
-  --color-bone: #f8f7f4;
-  --color-slate: #93a7b2;
-  --color-slate-deep: #4f6470;
+@theme {
+  --color-zinc-50: #f3f1ec;
+  --color-zinc-100: #e9e6df;
+  --color-zinc-200: #d4d1ca;
+  --color-zinc-300: #c4c6cc;
+  --color-zinc-400: #9aa0aa;
+  --color-zinc-500: #7d8390;
+  --color-zinc-600: #5c6270;
+  --color-zinc-700: #444953;
+  --color-zinc-800: #343b4a;
+  --color-zinc-900: #232936;
+  --color-zinc-950: #0e1725;
+
+  --color-ink: #0e1725;
+  --color-bone: #f3f1ec;
+  --color-cream: #e1dccf;
+  --color-slate: #e1dccf;
+  --color-slate-deep: #c9c2b2;
+  --color-signal: #f3473d;
 }
 
 :root {
-  --background: var(--color-zinc-50);
-  --foreground: var(--color-ink);
+  --background: var(--color-ink);
+  --foreground: var(--color-bone);
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-jost);
-  --font-serif: var(--font-spectral);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--color-ink);
-    --foreground: var(--color-zinc-50);
-  }
+  --font-sans: var(--font-dm-sans);
+  --font-display: var(--font-anton);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-jost), system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
 }
 
 /* The deck's lower-case value line, separated by thin rules. */
@@ -59,9 +58,11 @@ body {
   letter-spacing: 0.02em;
 }
 
-/* Page titles use the brand serif, like the deck's display type. */
+/* Page titles use the brief's condensed display face. */
 @layer base {
   h1 {
-    font-family: var(--font-spectral), Georgia, serif;
+    font-family: var(--font-anton), Impact, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
   }
 }

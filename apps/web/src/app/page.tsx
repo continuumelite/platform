@@ -17,8 +17,8 @@ export default function Home() {
       <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-10 px-6 py-16">
         <ValuesGrid className="max-w-md text-zinc-400" />
         <div>
-          <p className="font-serif text-xl text-zinc-50 italic">Continuum Elite</p>
-          <h1 className="mt-2 font-serif text-5xl leading-[1.05] font-semibold text-slate sm:text-7xl">
+          <p className="text-xl text-zinc-50 italic">Continuum Elite</p>
+          <h1 className="mt-2 text-5xl leading-[1.05] text-cream uppercase sm:text-7xl">
             Run. Bike. Swim.
             <br />
             Keep going.

@@ -18,17 +18,21 @@ export const MARK = {
   ],
 } as const;
 
+/** Colors from the app design brief (dark-only). */
 export const BRAND_COLORS = {
-  ink: '#131313',
-  bone: '#F8F7F4',
-  slate: '#93A7B2',
-  slateDeep: '#4F6470',
-  grey: '#B8B7B7',
+  navy: '#0E1725',
+  card: '#232936',
+  raised: '#343B4A',
+  rule: '#444953',
+  text: '#F3F1EC',
+  textSecondary: '#9AA0AA',
+  cream: '#E1DCCF',
+  red: '#F3473D',
 } as const;
 
 /** The mark as a standalone SVG string (for icons and files). */
 export function markSvg({
-  color = BRAND_COLORS.ink,
+  color = BRAND_COLORS.cream,
   background,
   size,
 }: { color?: string; background?: string; size?: number } = {}): string {

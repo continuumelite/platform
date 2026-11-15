@@ -1,17 +1,17 @@
-import type { Metadata } from 'next';
-import { Jost, Spectral } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Anton, DM_Sans } from 'next/font/google';
 import './globals.css';
 
-// Brand type: a geometric sans for the interface, a serif for display moments.
-const jost = Jost({
-  variable: '--font-jost',
+// Brand type from the design brief: Anton for headlines, DM Sans for the interface.
+const anton = Anton({
+  variable: '--font-anton',
   subsets: ['latin'],
+  weight: '400',
 });
 
-const spectral = Spectral({
-  variable: '--font-spectral',
+const dmSans = DM_Sans({
+  variable: '--font-dm-sans',
   subsets: ['latin'],
-  weight: ['400', '600'],
   style: ['normal', 'italic'],
 });
 
@@ -20,9 +20,14 @@ export const metadata: Metadata = {
   description: 'Personalized endurance and strength coaching. Consistency, resilience, discipline.',
 };
 
+export const viewport: Viewport = {
+  themeColor: '#0e1725',
+  colorScheme: 'dark',
+};
+
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${jost.variable} ${spectral.variable} h-full antialiased`}>
+    <html lang="en" className={`dark ${anton.variable} ${dmSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
   );

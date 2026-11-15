@@ -1,39 +1,36 @@
 /**
- * Continuum Elite brand, from the brand deck: near-black #131313, slate #93A7B2,
- * soft grey #B8B7B7 and white. Monochrome and quiet; slate is the only accent.
- * The web app uses the same values (apps/web/src/app/globals.css).
+ * Continuum design system, from the app design brief (docs/brand/README.md):
+ * dark only — deep navy background, raised navy-grey cards, cream for the logo and key text,
+ * grey rules, and a red accent used sparingly (alerts, AI, open items).
+ * Headings use Anton (tall condensed), everything else DM Sans.
  */
 
 import '@/global.css';
 
 import { Platform } from 'react-native';
 
-export const Colors = {
-  light: {
-    text: '#131313',
-    background: '#F8F7F4',
-    backgroundElement: '#EFEEEA',
-    backgroundSelected: '#E2E1DD',
-    textSecondary: '#5D5D5D',
-    accent: '#4F6470',
-  },
-  dark: {
-    text: '#F8F7F4',
-    background: '#131313',
-    backgroundElement: '#1C1C1C',
-    backgroundSelected: '#2A2A2A',
-    textSecondary: '#B8B7B7',
-    accent: '#93A7B2',
-  },
+const palette = {
+  text: '#F3F1EC',
+  background: '#0E1725',
+  backgroundElement: '#232936',
+  backgroundSelected: '#343B4A',
+  textSecondary: '#9AA0AA',
+  accent: '#F3473D',
+  cream: '#E1DCCF',
+  rule: '#444953',
 } as const;
+
+/** The app is dark only; both schemes use the same palette. */
+export const Colors = { light: palette, dark: palette } as const;
 
 /** Font families loaded in the root layout (@expo-google-fonts). Custom fonts need one family per weight. */
 export const BrandFonts = {
-  regular: 'Jost_400Regular',
-  medium: 'Jost_500Medium',
-  semibold: 'Jost_600SemiBold',
-  serif: 'Spectral_600SemiBold',
-  serifItalic: 'Spectral_400Regular_Italic',
+  display: 'Anton_400Regular',
+  regular: 'DMSans_400Regular',
+  italic: 'DMSans_400Regular_Italic',
+  medium: 'DMSans_500Medium',
+  semibold: 'DMSans_600SemiBold',
+  bold: 'DMSans_700Bold',
 } as const;
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;

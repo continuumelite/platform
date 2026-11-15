@@ -10,7 +10,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
         <div className="hidden justify-center lg:flex">
           <Logo className="text-zinc-50 [&_p]:text-zinc-400" />
         </div>
-        <p className="hidden font-serif text-lg text-zinc-400 italic lg:block">Continuum Elite</p>
+        <p className="hidden text-lg text-zinc-400 italic lg:block">Continuum Elite</p>
       </aside>
       <div className="flex items-center justify-center bg-zinc-50 px-4 py-12 dark:bg-zinc-950">
         <div className="w-full max-w-sm">{children}</div>

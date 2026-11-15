@@ -10,7 +10,7 @@ export default function ProgramsPage({ searchParams }: PageProps<'/dashboard/pro
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">Programs</h1>
+          <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">Programs</h1>
           <p className="mt-1 text-sm text-zinc-500">
             Build templates once, then copy and personalize them for each athlete.
           </p>

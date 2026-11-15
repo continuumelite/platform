@@ -32,8 +32,8 @@ export function Wordmark() {
   const theme = useTheme();
   return (
     <View accessible accessibilityRole="image" accessibilityLabel="Continuum" style={styles.lockup}>
-      <Mark height={44} />
-      <Text style={[styles.name, { color: theme.text }]}>CONTINUUM</Text>
+      <Mark height={44} color={theme.cream} />
+      <Text style={[styles.name, { color: theme.cream }]}>CONTINUUM</Text>
     </View>
   );
 }
@@ -41,4 +41,25 @@ export function Wordmark() {
 const styles = StyleSheet.create({
   lockup: { alignItems: 'flex-start', gap: 10 },
   name: { fontFamily: BrandFonts.semibold, fontSize: 18, letterSpacing: 6 },
+});
+
+/** Compact logo for the app header: the mark over CONTINUUM, in cream. */
+export function HeaderLogo() {
+  const theme = useTheme();
+  return (
+    <View
+      accessible
+      accessibilityRole="header"
+      accessibilityLabel="Continuum"
+      style={headerStyles.lockup}
+    >
+      <Mark height={20} color={theme.cream} />
+      <Text style={[headerStyles.name, { color: theme.cream }]}>CONTINUUM</Text>
+    </View>
+  );
+}
+
+const headerStyles = StyleSheet.create({
+  lockup: { alignItems: 'center', gap: 3 },
+  name: { fontFamily: BrandFonts.semibold, fontSize: 9, letterSpacing: 4 },
 });

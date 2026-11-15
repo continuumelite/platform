@@ -41,21 +41,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
   },
-  // Display type uses the brand serif, like the deck.
+  // Headings use Anton, the brief's tall condensed display face.
   title: {
-    fontFamily: BrandFonts.serif,
+    fontFamily: BrandFonts.display,
     fontSize: 44,
     lineHeight: 50,
   },
   subtitle: {
-    fontFamily: BrandFonts.serif,
+    fontFamily: BrandFonts.display,
     fontSize: 30,
     lineHeight: 38,
   },
   serifItalic: {
-    fontFamily: BrandFonts.serifItalic,
-    fontSize: 18,
-    lineHeight: 24,
+    fontFamily: BrandFonts.italic,
+    fontSize: 16,
+    lineHeight: 22,
   },
   // Small tracked caps for labels, like the deck's value line.
   eyebrow: {

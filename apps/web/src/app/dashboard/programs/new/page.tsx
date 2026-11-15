@@ -7,7 +7,7 @@ import { NewProgramForm } from './new-program-form';
 export default function NewProgramPage({ searchParams }: PageProps<'/dashboard/programs/new'>) {
   return (
     <>
-      <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">New program</h1>
+      <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">New program</h1>
       <Card>
         <Suspense fallback={<p className="text-sm text-zinc-500">Loading…</p>}>
           <Form searchParams={searchParams} />

@@ -100,9 +100,7 @@ async function Program({ params }: { params: Promise<{ id: string }> }) {
               : `Program for ${program.athlete?.profile?.full_name ?? 'athlete'}`}
           </p>
           <div className="mt-1 flex items-center gap-3">
-            <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {program.name}
-            </h1>
+            <h1 className="text-4xl text-zinc-900 dark:text-zinc-50">{program.name}</h1>
             {!isTemplate && <StatusBadge status={program.status} />}
           </div>
         </div>

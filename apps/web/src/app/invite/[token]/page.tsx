@@ -26,7 +26,7 @@ async function Invitation({ params }: { params: PageProps<'/invite/[token]'>['pa
   if (!invite || invite.is_accepted || invite.is_expired) {
     return (
       <>
-        <h1 className="text-xl font-semibold">This invitation isn’t valid</h1>
+        <h1 className="text-3xl">This invitation isn’t valid</h1>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
           {invite?.is_accepted
             ? 'It has already been used. '
@@ -48,7 +48,7 @@ async function Invitation({ params }: { params: PageProps<'/invite/[token]'>['pa
   return (
     <>
       <p className="text-sm text-zinc-500">{invite.organization_name}</p>
-      <h1 className="mt-1 text-xl font-semibold">
+      <h1 className="mt-1 text-3xl">
         {invite.invited_by_name ?? 'Your coach'} invited you to join as {roleLabel}
       </h1>
       {signedInEmail && signedInEmail !== invite.email ? (
